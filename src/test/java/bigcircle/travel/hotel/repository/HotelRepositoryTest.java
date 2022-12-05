@@ -31,7 +31,7 @@ class HotelRepositoryTest {
     @Test
     @DisplayName("save & findById")
     void saveAndFindById() {
-        HotelCreateDto item = new HotelCreateDto("메리어트 호텔", "5성급 최고급 호텔", "서울 강남", 30000);
+        HotelCreateDto item = new HotelCreateDto("가나다 호텔", "5성급 최고급 호텔", "서울 강남", 30000);
         String id = this.repository.save(item);
         Hotel byId = this.repository.findById(id);
         assertThat(byId.getId()).isEqualTo(id);
@@ -43,8 +43,8 @@ class HotelRepositoryTest {
 
     @Test
     void findAll() {
-        HotelCreateDto item = new HotelCreateDto("메리어트 호텔", "5성급 최고급 호텔", "서울 강남", 30000);
-        HotelCreateDto item2 = new HotelCreateDto("메리어트 호텔2", "5성급 최고급 호텔", "서울 강남", 30000);
+        HotelCreateDto item = new HotelCreateDto("가나다 호텔", "5성급 최고급 호텔", "서울 강남", 30000);
+        HotelCreateDto item2 = new HotelCreateDto("가나다 호텔2", "5성급 최고급 호텔", "서울 강남", 30000);
         this.repository.save(item);
         this.repository.save(item2);
 
