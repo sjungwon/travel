@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  </head>
+  <body>
+    <form th:object="${hotelCreateDto}" method="post" action="/hotel/add">
+      <div>
+        <label for="title">호텔명:</label>
+        <input id="title" th:field="*{title}" type="text" />
+      </div>
+      <div>
+        <label for="zonecode">우편번호:</label>
+        <input id="zonecode" readonly th:field="*{zonecode}" type="text" />
+        <button id="address-search" type="button">찾기</button>
+      </div>
+      <div>
+        <label for="address">주소:</label>
+        <input id="address" readonly th:field="*{address}" />
+      </div>
+      <div>
+        <label for="address-detail">상세 주소:</label>
+        <input id="address-detail" th:field="*{addressDetail}" />
+      </div>
+      <div>
+        <label for="price">가격:</label>
+        <input id="price" th:field="*{price}" />
+      </div>
+      <div>
+        <label for="description">설명: </label>
+        <textarea id="description" th:field="*{description}"></textarea>
+      </div>
+      <button>추가</button>
+    </form>
+    <script>
+      const zonecode = document.querySelector("#zonecode");
+      const address = document.querySelector("#address");
+      const postFunc = (event) => {
+        console.log("click");
+        new daum.Postcode({
+          oncomplete: function (data) {
+            zonecode.setAttribute("value", data.zonecode);
+            address.setAttribute("value", data.address);
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+            // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+          },
+        }).open();
+      };
+      const btnEl = document.querySelector("#address-search");
+      btnEl.addEventListener("click", postFunc);
+    </script>
+  </body>
+</html>

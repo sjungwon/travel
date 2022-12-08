@@ -1,6 +1,7 @@
 package bigcircle.travel.hotel.service;
 
 import bigcircle.travel.hotel.domain.Hotel;
+import bigcircle.travel.hotel.repository.HotelCreateDto;
 import bigcircle.travel.hotel.repository.HotelRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,10 @@ public class HotelService {
     public List<Hotel> getHotels(){
         List<Hotel> all = this.repository.findAll();
         return all;
+    }
+
+    public void save(HotelCreateDto hotelCreateDto){
+        String save = repository.save(hotelCreateDto);
     }
 
 }

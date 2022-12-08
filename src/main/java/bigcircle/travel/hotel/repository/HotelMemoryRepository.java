@@ -16,7 +16,7 @@ public class HotelMemoryRepository implements HotelRepository{
 
     public String save(HotelCreateDto item){
         String id = UUID.randomUUID().toString();
-        Hotel hotel = new Hotel(id, item.getTitle(),item.getDescription(), item.getLocation(),item.getPrice());
+        Hotel hotel = new Hotel(id, item.getTitle(),item.getZonecode(), item.getAddress(), item.getAddressDetail(),item.getPrice(),item.getDescription());
         this.db.put(id, hotel);
         return id;
     }

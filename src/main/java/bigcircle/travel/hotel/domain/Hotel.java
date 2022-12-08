@@ -4,20 +4,25 @@ public class Hotel {
 
     private String id;
     private String title;
-    private String description;
 
-    private String location;
+    private int zonecode;
+    private String address;
+    private String addressDetail;
     private int price;
+
+    private String description;
 
     public Hotel() {
     }
 
-    public Hotel(String id, String title, String description, String location,int price) {
+    public Hotel(String id, String title, int zonecode, String address, String addressDetail, int price, String description) {
         this.id = id;
         this.title = title;
-        this.description = description;
-        this.location = location;
+        this.zonecode = zonecode;
+        this.address = address;
+        this.addressDetail = addressDetail;
         this.price = price;
+        this.description = description;
     }
 
     public String getId() {
@@ -32,8 +37,16 @@ public class Hotel {
         return description;
     }
 
-    public String getLocation(){
-        return location;
+    public int getZonecode() {
+        return zonecode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getAddressDetail() {
+        return addressDetail;
     }
 
     public int getPrice() {
@@ -48,8 +61,16 @@ public class Hotel {
         this.description = description;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setZonecode(int zonecode) {
+        this.zonecode = zonecode;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
     }
 
     public void setPrice(int price) {

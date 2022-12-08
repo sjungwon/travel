@@ -20,8 +20,7 @@ public class TestDataInit {
     @EventListener(ApplicationReadyEvent.class)
     public void initData() {
         log.info("test data init");
-        repository.save(new HotelCreateDto("가나다 호텔 강남점","5성급", "서울 강남", 10));
-        repository.save(new HotelCreateDto("가나다 호텔 강서점","5성급", "서울 강서", 20));
+        repository.save(new HotelCreateDto("가나다 호텔 강남점",12345, "가나다","", 10, "5성급"));
+        repository.save(new HotelCreateDto("가나다 호텔 강서점",12344,"라마바","", 20,"5성급"));
     }
-
 }

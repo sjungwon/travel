@@ -2,22 +2,55 @@ package bigcircle.travel.hotel.repository;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 public class HotelCreateDto {
+    @NotBlank
     private String title;
+
+    @NotNull
+    private Integer zonecode;
+
+    @NotBlank
+    private String address;
+
+    @NotBlank
+    private String addressDetail;
+    @NotNull
+    @Range(min = 100)
+    private Integer price;
+
+    @NotBlank
     private String description;
-    private String location;
-    private int price;
 
     public HotelCreateDto() {
     }
 
-    public HotelCreateDto(String title, String description, String location, int price) {
+    public HotelCreateDto(String title, int zonecode, String address, String addressDetail, int price, String description) {
         this.title = title;
-        this.description = description;
-        this.location = location;
+        this.zonecode = zonecode;
+        this.address = address;
+        this.addressDetail = addressDetail;
         this.price = price;
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "HotelCreateDto{" +
+                "title='" + title + '\'' +
+                ", zonecode=" + zonecode +
+                ", address='" + address + '\'' +
+                ", addressDetail='" + addressDetail + '\'' +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

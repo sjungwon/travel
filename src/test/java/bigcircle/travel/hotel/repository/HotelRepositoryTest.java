@@ -1,17 +1,13 @@
 package bigcircle.travel.hotel.repository;
 
 import bigcircle.travel.hotel.domain.Hotel;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class HotelRepositoryTest {
 
@@ -31,20 +27,21 @@ class HotelRepositoryTest {
     @Test
     @DisplayName("save & findById")
     void saveAndFindById() {
-        HotelCreateDto item = new HotelCreateDto("가나다 호텔", "5성급 최고급 호텔", "서울 강남", 30000);
+        HotelCreateDto item = new HotelCreateDto("가나다 호텔", 1234, "서울 어딘가", "상세주소", 30000, "5성급 최고급 호텔");
         String id = this.repository.save(item);
         Hotel byId = this.repository.findById(id);
         assertThat(byId.getId()).isEqualTo(id);
         assertThat(byId.getDescription()).isEqualTo(item.getDescription());
-        assertThat(byId.getLocation()).isEqualTo(item.getLocation());
+        assertThat(byId.getAddress()).isEqualTo(item.getAddress());
         assertThat(byId.getPrice()).isEqualTo(item.getPrice());
         assertThat(byId.getTitle()).isEqualTo(item.getTitle());
     }
 
     @Test
     void findAll() {
-        HotelCreateDto item = new HotelCreateDto("가나다 호텔", "5성급 최고급 호텔", "서울 강남", 30000);
-        HotelCreateDto item2 = new HotelCreateDto("가나다 호텔2", "5성급 최고급 호텔", "서울 강남", 30000);
+        HotelCreateDto item = new HotelCreateDto("가나다 호텔", 1234, "서울 어딘가", "상세주소", 30000, "5성급 최고급 호텔");
+        HotelCreateDto item2 = new HotelCreateDto("가나다 호텔2", 1235, "경기 어딘가", "상세주소", 30000, "5성급 최고급 호텔");
+
         this.repository.save(item);
         this.repository.save(item2);
 
