@@ -1,6 +1,6 @@
-package bigcircle.travel.hotel.domain;
+package bigcircle.travel.item.domain;
 
-public class Hotel {
+public class Item {
 
     private String id;
     private String title;
@@ -12,10 +12,10 @@ public class Hotel {
 
     private String description;
 
-    public Hotel() {
+    public Item() {
     }
 
-    public Hotel(String id, String title, int zonecode, String address, String addressDetail, int price, String description) {
+    public Item(String id, String title, int zonecode, String address, String addressDetail, int price, String description) {
         this.id = id;
         this.title = title;
         this.zonecode = zonecode;

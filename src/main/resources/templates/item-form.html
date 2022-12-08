@@ -6,7 +6,7 @@
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   </head>
   <body>
-    <form th:object="${hotelCreateDto}" method="post" action="/hotel/add">
+    <form th:object="${itemCreateDto}" method="post" action="/item/add">
       <div>
         <label for="title">호텔명:</label>
         <input id="title" th:field="*{title}" type="text" />

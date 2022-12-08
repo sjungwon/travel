@@ -1,17 +1,15 @@
-package bigcircle.travel.hotel.repository;
+package bigcircle.travel.item.repository;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class HotelCreateDto {
+public class ItemCreateDto {
     @NotBlank
     private String title;
 
@@ -30,10 +28,10 @@ public class HotelCreateDto {
     @NotBlank
     private String description;
 
-    public HotelCreateDto() {
+    public ItemCreateDto() {
     }
 
-    public HotelCreateDto(String title, int zonecode, String address, String addressDetail, int price, String description) {
+    public ItemCreateDto(String title, int zonecode, String address, String addressDetail, int price, String description) {
         this.title = title;
         this.zonecode = zonecode;
         this.address = address;
