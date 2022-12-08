@@ -27,28 +27,28 @@ public class ItemController {
     }
 
     @GetMapping
-    public String getHotels(Model model){
+    public String getItems(Model model){
 
-        List<Item> items = service.getHotels();
+        List<Item> items = service.getItems();
 
-        model.addAttribute("hotels", items);
+        model.addAttribute("items", items);
 
         return "item";
     }
 
     @GetMapping("/add")
-    public String getHotelForm(Model model){
+    public String getItemForm(Model model){
         ItemCreateDto itemCreateDto = new ItemCreateDto();
-        model.addAttribute("hotelCreateDto", itemCreateDto);
+        model.addAttribute("itemCreateDto", itemCreateDto);
         return "item-form";
     }
 
     @PostMapping("/add")
-    public String saveHotel(@ModelAttribute @Validated ItemCreateDto itemCreateDto, BindingResult bindingResult){
-        log.info("hotelCreateDto={}", itemCreateDto);
+    public String saveItem(@ModelAttribute @Validated ItemCreateDto itemCreateDto, BindingResult bindingResult){
+        log.info("itemCreateDto={}", itemCreateDto);
 
         if(bindingResult.hasErrors()){
-            return "/hotel-form";
+            return "/item-form";
         }
 
         service.save(itemCreateDto);

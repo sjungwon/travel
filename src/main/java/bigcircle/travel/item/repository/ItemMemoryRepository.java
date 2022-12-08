@@ -14,10 +14,10 @@ public class ItemMemoryRepository implements ItemRepository {
         this.db = new ConcurrentHashMap<>();
     }
 
-    public String save(ItemCreateDto item){
+    public String save(ItemCreateDto itemDto){
         String id = UUID.randomUUID().toString();
-        Item hotel = new Item(id, item.getTitle(),item.getZonecode(), item.getAddress(), item.getAddressDetail(),item.getPrice(),item.getDescription());
-        this.db.put(id, hotel);
+        Item item = new Item(id, itemDto.getTitle(),itemDto.getZonecode(), itemDto.getAddress(), itemDto.getAddressDetail(),itemDto.getPrice(),itemDto.getDescription());
+        this.db.put(id, item);
         return id;
     }
 

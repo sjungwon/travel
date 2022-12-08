@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Configuration;
 public class ItemMemoryConfig {
 
     @Bean
-    public ItemService hotelService(){
-        return new ItemService(hotelRepository());
+    public ItemService itemService(){
+        return new ItemService(itemRepository());
     }
 
     @Bean
-    public ItemRepository hotelRepository(){
+    public ItemRepository itemRepository(){
         return new ItemMemoryRepository();
     }
 

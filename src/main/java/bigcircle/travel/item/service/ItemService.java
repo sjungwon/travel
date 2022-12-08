@@ -16,7 +16,7 @@ public class ItemService {
         this.repository = repository;
     }
 
-    public List<Item> getHotels(){
+    public List<Item> getItems(){
         List<Item> all = this.repository.findAll();
         return all;
     }
