@@ -11,7 +11,8 @@
         <div class="card-body">
             <p th:text="${item.title}">호텔</p>
             <p th:text="${item.description}">설명</p>
-            <p th:text="${item.address}">위치</p>
+            <p th:text="${item.address.zonecode}">우편번호</p>
+            <p th:text="${item.address.address}">주소</p>
         </div>
     </div>
 </body>

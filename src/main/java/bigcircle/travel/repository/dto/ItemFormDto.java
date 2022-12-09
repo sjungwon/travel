@@ -1,4 +1,4 @@
-package bigcircle.travel.item.repository;
+package bigcircle.travel.repository.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class ItemCreateDto {
+public class ItemFormDto {
     @NotBlank
     private String title;
 
@@ -21,22 +21,17 @@ public class ItemCreateDto {
 
     @NotBlank
     private String addressDetail;
-    @NotNull
-    @Range(min = 100)
-    private Integer price;
-
     @NotBlank
     private String description;
 
-    public ItemCreateDto() {
+    public ItemFormDto() {
     }
 
-    public ItemCreateDto(String title, int zonecode, String address, String addressDetail, int price, String description) {
+    public ItemFormDto(String title, int zonecode, String address, String addressDetail,String description) {
         this.title = title;
         this.zonecode = zonecode;
         this.address = address;
         this.addressDetail = addressDetail;
-        this.price = price;
         this.description = description;
     }
 
@@ -47,7 +42,6 @@ public class ItemCreateDto {
                 ", zonecode=" + zonecode +
                 ", address='" + address + '\'' +
                 ", addressDetail='" + addressDetail + '\'' +
-                ", price=" + price +
                 ", description='" + description + '\'' +
                 '}';
     }

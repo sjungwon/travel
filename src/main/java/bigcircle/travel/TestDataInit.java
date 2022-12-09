@@ -1,8 +1,8 @@
 package bigcircle.travel;
 
 
-import bigcircle.travel.item.repository.ItemCreateDto;
-import bigcircle.travel.item.repository.ItemRepository;
+import bigcircle.travel.repository.dto.ItemFormDto;
+import bigcircle.travel.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,7 +12,7 @@ import org.springframework.context.event.EventListener;
 @RequiredArgsConstructor
 public class TestDataInit {
 
-    private final ItemRepository repository;
+    private final ItemService service;
 
     /**
      * 확인용 초기 데이터 추가
@@ -20,7 +20,7 @@ public class TestDataInit {
     @EventListener(ApplicationReadyEvent.class)
     public void initData() {
         log.info("test data init");
-        repository.save(new ItemCreateDto("가나다 호텔 강남점",12345, "가나다","", 10, "5성급"));
-        repository.save(new ItemCreateDto("가나다 호텔 강서점",12344,"라마바","", 20,"5성급"));
+        service.save(new ItemFormDto("가나다 호텔 강남점",12345, "가나다","", "5성급"));
+        service.save(new ItemFormDto("가나다 호텔 강서점",12344,"라마바","","5성급"));
     }
 }

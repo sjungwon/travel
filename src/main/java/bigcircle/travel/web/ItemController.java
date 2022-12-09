@@ -1,8 +1,9 @@
-package bigcircle.travel.item.web;
+package bigcircle.travel.web;
 
-import bigcircle.travel.item.domain.Item;
-import bigcircle.travel.item.repository.ItemCreateDto;
-import bigcircle.travel.item.service.ItemService;
+import bigcircle.travel.domain.Item;
+import bigcircle.travel.repository.dto.ItemDto;
+import bigcircle.travel.repository.dto.ItemFormDto;
+import bigcircle.travel.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +30,7 @@ public class ItemController {
     @GetMapping
     public String getItems(Model model){
 
-        List<Item> items = service.getItems();
+        List<ItemDto> items = service.getItems();
 
         model.addAttribute("items", items);
 
@@ -38,13 +39,13 @@ public class ItemController {
 
     @GetMapping("/add")
     public String getItemForm(Model model){
-        ItemCreateDto itemCreateDto = new ItemCreateDto();
+        ItemFormDto itemCreateDto = new ItemFormDto();
         model.addAttribute("itemCreateDto", itemCreateDto);
         return "item-form";
     }
 
     @PostMapping("/add")
-    public String saveItem(@ModelAttribute @Validated ItemCreateDto itemCreateDto, BindingResult bindingResult){
+    public String saveItem(@ModelAttribute @Validated ItemFormDto itemCreateDto, BindingResult bindingResult){
         log.info("itemCreateDto={}", itemCreateDto);
 
         if(bindingResult.hasErrors()){
