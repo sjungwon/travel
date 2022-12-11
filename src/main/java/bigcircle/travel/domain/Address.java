@@ -11,9 +11,6 @@ public class Address {
     private Integer zonecode;
     private String address;
 
-    public Address() {
-    }
-
     public Address(Integer zonecode, String address) {
         this.zonecode = zonecode;
         this.address = address;

@@ -6,9 +6,13 @@
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   </head>
   <body>
-    <form th:object="${itemCreateDto}" method="post" action="/item/add">
+    <form th:object="${itemFormDto}" method="post" action="/items/save">
       <div>
-        <label for="title">호텔명:</label>
+        <label for="categoryTitle">카테고리:</label>
+        <input id="categoryTitle" th:field="*{categoryTitle}" type="text"/>
+      </div>
+      <div>
+        <label for="title">이름:</label>
         <input id="title" th:field="*{title}" type="text" />
       </div>
       <div>
@@ -25,14 +29,10 @@
         <input id="address-detail" th:field="*{addressDetail}" />
       </div>
       <div>
-        <label for="price">가격:</label>
-        <input id="price" th:field="*{price}" />
-      </div>
-      <div>
         <label for="description">설명: </label>
         <textarea id="description" th:field="*{description}"></textarea>
       </div>
-      <button>추가</button>
+      <button th:text="#{btn.item.save}">추가</button>
     </form>
     <script>
       const zonecode = document.querySelector("#zonecode");

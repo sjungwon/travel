@@ -22,7 +22,7 @@ public class AddressMemoryRepository implements AddressRepository {
     public void save(Address address){
         Address dup = db.get(address.getZonecode());
         if(dup != null){
-            throw new DuplicateKeyException(address.getZonecode() + "exist");
+            return;
         }
         db.put(address.getZonecode(), address);
     }
@@ -34,4 +34,8 @@ public class AddressMemoryRepository implements AddressRepository {
         return address;
     }
 
+    @Override
+    public void update(Address address) {
+
+    }
 }

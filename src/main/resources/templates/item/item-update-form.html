@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+<form th:object="${itemUpdateFormDto}" method="post" th:action="@{/items/update}">
+    <div>
+        <label for="id" th:text="#{label.item.id}">id</label>
+        <input id="id" th:field="*{id}" type="text" readonly/>
+    </div>
+    <div>
+        <label for="categoryTitle" th:text="#{label.item.category}">카테고리:</label>
+        <input id="categoryTitle" th:field="*{categoryTitle}" type="text"/>
+    </div>
+    <div>
+        <label for="title" th:text="#{label.item.title}">이름:</label>
+        <input id="title" th:field="*{title}" type="text" />
+    </div>
+    <div>
+        <label for="zonecode" th:text="#{label.item.zonecode}">우편번호:</label>
+        <input id="zonecode" readonly th:field="*{zonecode}" type="text" />
+        <button id="address-search" type="button">찾기</button>
+    </div>
+    <div>
+        <label for="address" th:text="#{label.item.address}">주소:</label>
+        <input id="address" readonly th:field="*{address}" />
+    </div>
+    <div>
+        <label for="address-detail" th:text="#{label.item.addressDetail}">상세 주소:</label>
+        <input id="address-detail" th:field="*{addressDetail}" />
+    </div>
+    <div>
+        <label for="description" th:text="#{label.item.description}">설명: </label>
+        <textarea id="description" th:field="*{description}"></textarea>
+    </div>
+    <button th:text="#{btn.item.update}">수정</button>
+</form>
+<script>
+      const zonecode = document.querySelector("#zonecode");
+      const address = document.querySelector("#address");
+      const postFunc = (event) => {
+        console.log("click");
+        new daum.Postcode({
+          oncomplete: function (data) {
+            zonecode.setAttribute("value", data.zonecode);
+            address.setAttribute("value", data.address);
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+            // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+          },
+        }).open();
+      };
+      const btnEl = document.querySelector("#address-search");
+      btnEl.addEventListener("click", postFunc);
+    </script>
+</body>
+</html>

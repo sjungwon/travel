@@ -1,6 +1,7 @@
 package bigcircle.travel;
 
 import bigcircle.travel.config.ItemMemoryConfig;
+import bigcircle.travel.config.LibConfig;
 import bigcircle.travel.repository.ItemRepository;
 import bigcircle.travel.service.ItemService;
 import org.springframework.boot.SpringApplication;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-@Import(ItemMemoryConfig.class)
+@Import({ItemMemoryConfig.class, LibConfig.class})
 @SpringBootApplication(scanBasePackages = "bigcircle.travel.web")
 public class TravelApplication {
 

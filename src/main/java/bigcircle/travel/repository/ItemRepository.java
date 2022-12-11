@@ -1,17 +1,19 @@
 package bigcircle.travel.repository;
 
-import bigcircle.travel.domain.Item;
 import bigcircle.travel.repository.dto.ItemDto;
-import bigcircle.travel.repository.dto.ItemFormDto;
+import bigcircle.travel.repository.dto.ItemSaveDto;
+import bigcircle.travel.service.dto.ItemFormDto;
 
 import java.util.*;
 
 public interface ItemRepository {
-    String save(ItemFormDto itemFormDto);
+    Long save(ItemSaveDto itemSaveDto);
 
-    ItemDto findById(String id);
+    ItemDto findById(Long id);
 
     List<ItemDto> findAll();
 
-    void clear();
+    void update(Long id, ItemSaveDto itemSaveDto);
+
+    void delete(Long id);
 }

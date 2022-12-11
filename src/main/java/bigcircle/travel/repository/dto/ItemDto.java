@@ -1,22 +1,31 @@
 package bigcircle.travel.repository.dto;
 
 import bigcircle.travel.domain.Address;
+import bigcircle.travel.domain.CategoryType;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 public class ItemDto {
-    private String id;
+    private Long id;
     private String title;
+
+    private CategoryType category;
     private Address address;
     private String addressDetail;
     private String description;
-    private String createdAt;
-    private String lastUpdate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastUpdate;
 
     public ItemDto() {
     }
 
-    public ItemDto(String id, String title, Address address, String addressDetail, String description, String createdAt, String lastUpdate) {
+    public ItemDto(Long id, String title, CategoryType category, Address address, String addressDetail, String description, LocalDateTime createdAt, LocalDateTime lastUpdate) {
         this.id = id;
         this.title = title;
+        this.category = category;
         this.address = address;
         this.addressDetail = addressDetail;
         this.description = description;
@@ -24,7 +33,7 @@ public class ItemDto {
         this.lastUpdate = lastUpdate;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -44,15 +53,15 @@ public class ItemDto {
         return description;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public String getLastUpdate() {
+    public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -72,11 +81,19 @@ public class ItemDto {
         this.description = description;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public CategoryType getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryType category) {
+        this.category = category;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setLastUpdate(String lastUpdate) {
+    public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 

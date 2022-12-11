@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel - 하나보기</title>
+</head>
+<body>
+<div class="card-body">
+    <p th:text="${item.id}">id</p>
+    <p th:text="${{item.lastUpdate}}">날짜</p>
+    <p th:text="${item.category.korean}">카테고리</p>
+    <p th:text="${item.title}">이름</p>
+    <p th:text="${item.description}">설명</p>
+    <p th:text="${item.address.zonecode}">우편번호</p>
+    <p th:text="${item.address.address}">주소</p>
+    <p th:text="${item.addressDetail}">상세 주소</p>
+    <a th:text="#{btn.item.update}" th:href="@{/items/update/{id}(id = ${item.id})}">수정</a>
+    <a th:text="#{btn.item.delete}" th:href="@{/items/delete/{id} (id=${item.id})}">삭제</a>
+    <a th:href="@{/items}">리스트</a>
+</div>
+</body>
+</html>

@@ -6,4 +6,6 @@ public interface AddressRepository {
     public void save(Address address);
 
     public Address findByZonecode(int zonecode);
+
+    public void update(Address address);
 }

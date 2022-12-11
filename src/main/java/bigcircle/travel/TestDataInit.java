@@ -1,7 +1,7 @@
 package bigcircle.travel;
 
 
-import bigcircle.travel.repository.dto.ItemFormDto;
+import bigcircle.travel.service.dto.ItemFormDto;
 import bigcircle.travel.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class TestDataInit {
     @EventListener(ApplicationReadyEvent.class)
     public void initData() {
         log.info("test data init");
-        service.save(new ItemFormDto("가나다 호텔 강남점",12345, "가나다","", "5성급"));
-        service.save(new ItemFormDto("가나다 호텔 강서점",12344,"라마바","","5성급"));
+        service.save(new ItemFormDto("가나다 호텔 강남점",12345, "가나다","", "5성급", "호텔"));
+        service.save(new ItemFormDto("가나다 호텔 강서점",12344,"라마바","","5성급", "호텔"));
     }
 }

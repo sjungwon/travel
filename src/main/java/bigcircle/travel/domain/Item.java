@@ -1,7 +1,5 @@
 package bigcircle.travel.domain;
 
-import java.time.LocalDateTime;
-
 
 /**
  * PK - id
@@ -9,30 +7,31 @@ import java.time.LocalDateTime;
  */
 public class Item {
 
-    private String id;
+    private Long id;
     private String title;
     private int zonecode;
     private String addressDetail;
     private String description;
 
+    private Long categoryId;
+
     private String createdAt;
 
     private String lastUpdate;
 
-    public Item() {
-    }
 
-    public Item(String id, String title, int zonecode, String addressDetail, String description, String createdAt, String lastUpdate) {
+    public Item(Long id, String title, int zonecode, String addressDetail, String description, Long categoryId, String createdAt, String lastUpdate) {
         this.id = id;
         this.title = title;
         this.zonecode = zonecode;
         this.addressDetail = addressDetail;
         this.description = description;
+        this.categoryId = categoryId;
         this.createdAt = createdAt;
         this.lastUpdate = lastUpdate;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -46,6 +45,10 @@ public class Item {
 
     public int getZonecode() {
         return zonecode;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
     }
 
     public String getAddressDetail() {
