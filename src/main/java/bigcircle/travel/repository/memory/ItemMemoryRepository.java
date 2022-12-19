@@ -1,44 +1,46 @@
 package bigcircle.travel.repository.memory;
 
-import bigcircle.travel.domain.Address;
-import bigcircle.travel.domain.CategoryType;
-import bigcircle.travel.domain.Item;
+import bigcircle.travel.domain.*;
 import bigcircle.travel.lib.LongIdGenerator;
 import bigcircle.travel.repository.AddressRepository;
 import bigcircle.travel.repository.CategoryRepository;
+import bigcircle.travel.repository.ItemImageRepository;
 import bigcircle.travel.repository.dto.ItemSaveDto;
 import bigcircle.travel.repository.dto.ItemDto;
 import bigcircle.travel.repository.ItemRepository;
-import bigcircle.travel.service.dto.ItemFormDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
+@Slf4j
 @Repository
 public class ItemMemoryRepository implements ItemRepository {
     private final Map<Long, Item> db;
 
+    private final LongIdGenerator idGenerator;
 
     //JOIN 구현을 위해 다른 repository 의존
     private final AddressRepository addressRepository;
-    private final CategoryRepository categoryRepository;
+    private final ItemImageRepository itemImageRepository;
 
-    private final LongIdGenerator idGenerator;
 
-    public ItemMemoryRepository(AddressRepository addressRepository, CategoryRepository categoryRepository) {
+    public ItemMemoryRepository(AddressRepository addressRepository,ItemImageRepository itemImageRepository) {
         this.db = new ConcurrentHashMap<>();
+        this.idGenerator = new LongIdGenerator();
         this.addressRepository = addressRepository;
-        this.categoryRepository = categoryRepository;
-        idGenerator = new LongIdGenerator();
+        this.itemImageRepository = itemImageRepository;
     }
 
     @Override
     public Long save(ItemSaveDto itemSaveDto){
         Long id = idGenerator.getId();
 
-        Item item = itemSaveDtoToItemConverter(id, itemSaveDto, null);
+
+        Item item = itemSaveDtoToItemConverter(id, itemSaveDto);
+
+        log.info("item={}",item);
 
         this.db.put(id, item);
 
@@ -49,6 +51,7 @@ public class ItemMemoryRepository implements ItemRepository {
     public ItemDto findById(Long id){
         Item item = this.db.get(id);
 
+        log.info("test={}",item);
         return join(item);
     }
 
@@ -59,7 +62,7 @@ public class ItemMemoryRepository implements ItemRepository {
         List<ItemDto> items = new ArrayList<>(this.db.size());
 
         for (Long s : keySet) {
-            items.add(join(this.db.get(s)));
+            items.add(this.findById(s));
         }
 
         return items;
@@ -73,7 +76,7 @@ public class ItemMemoryRepository implements ItemRepository {
 
         this.db.remove(id);
 
-        Item item = itemSaveDtoToItemConverter(id, itemSaveDto, createdAt);
+        Item item = itemSaveDtoToItemConverter(id, itemSaveDto);
 
         this.db.put(id, item);
     }
@@ -88,19 +91,26 @@ public class ItemMemoryRepository implements ItemRepository {
     }
 
     public ItemDto join(Item item){
-        int zonecode = item.getZonecode();
-        Address address = addressRepository.findByZonecode(zonecode);
-
         Long categoryId = item.getCategoryId();
-        CategoryType category = categoryRepository.findCategoryById(categoryId);
 
-        return new ItemDto(item.getId(), item.getTitle(), category, address, item.getAddressDetail(), item.getDescription(), LocalDateTime.parse(item.getCreatedAt()), LocalDateTime.parse(item.getLastUpdate()));
+        Category[] values = Category.values();
+        Category category = null;
+        for (Category value : values) {
+            if(categoryId.equals(value.getId())){
+                category = value;
+            }
+        }
+
+        Address address = this.addressRepository.findByZonecode(item.getZonecode());
+
+        List<ItemImage> itemImages = itemImageRepository.findByItemId(item.getId());
+
+        return new ItemDto(item.getId(), item.getTitle(), item.getThumbnail(),category, address, item.getAddressDetail(), item.getDescription(), LocalDateTime.parse(item.getCreatedAt()), LocalDateTime.parse(LocalDateTime.now().toString()), itemImages);
     }
 
-    private Item itemSaveDtoToItemConverter(Long id, ItemSaveDto itemSaveDto, String createdAt){
-        if(createdAt == null){
-            return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getZonecode(), itemSaveDto.getAddressDetail(),itemSaveDto.getDescription(), itemSaveDto.getCategoryId(), LocalDateTime.now().toString(), LocalDateTime.now().toString());
-        }
-        return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getZonecode(), itemSaveDto.getAddressDetail(),itemSaveDto.getDescription(), itemSaveDto.getCategoryId(), createdAt, LocalDateTime.now().toString());
+
+    private Item itemSaveDtoToItemConverter(Long id, ItemSaveDto itemSaveDto){
+        log.info("itemSaveDto = {}", itemSaveDto);
+        return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getThumbnail() ,itemSaveDto.getZonecode(), itemSaveDto.getAddressDetail(), itemSaveDto.getDescription(), itemSaveDto.getCategoryId(), itemSaveDto.getCreatedAt(), itemSaveDto.getUpdatedAt());
     }
 }

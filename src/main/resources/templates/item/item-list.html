@@ -10,9 +10,12 @@
     <div th:each="item : ${items}" class="card" style="width: 18rem;">
         <div class="card-body">
             <a th:href="@{/items/{id}(id=${item.id})}" th:text="${item.id}">id</a>
-            <p th:text="${item.category.korean}">카테고리</p>
+            <p th:text="${item.category.kr}">카테고리</p>
             <p th:text="${item.title}">이름</p>
-            <p th:text="${item.description}">설명</p>
+
+            <img th:if="${item.thumbnail != null}" th:src="@{{url}/{image} (url=#{src.item.image}, image=${item.thumbnail})}"/>
+            <img th:unless="${item.thumbnail != null}" src="/item/icon/camera-50.png"/>
+<!--            <p th:text="${item.description}">설명</p>-->
             <p th:text="${item.address.zonecode}">우편번호</p>
             <p th:text="${item.address.address}">주소</p>
         </div>

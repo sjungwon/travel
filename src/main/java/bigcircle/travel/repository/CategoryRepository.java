@@ -1,8 +1,8 @@
 package bigcircle.travel.repository;
 
-import bigcircle.travel.domain.CategoryType;
+import bigcircle.travel.domain.Category;
 
 public interface CategoryRepository {
-    public Long findIdByKoreanTitle(String title);
-    public CategoryType findCategoryById(Long id);
+    public Long findIdByKorean(String korean);
+    public Category findById(Long id);
 }

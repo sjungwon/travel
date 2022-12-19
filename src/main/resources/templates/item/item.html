@@ -7,10 +7,13 @@
 <body>
 <div class="card-body">
     <p th:text="${item.id}">id</p>
-    <p th:text="${{item.lastUpdate}}">날짜</p>
-    <p th:text="${item.category.korean}">카테고리</p>
+    <p th:text="${{item.updatedAt}}">날짜</p>
+    <p th:text="${item.category.kr}">카테고리</p>
     <p th:text="${item.title}">이름</p>
-    <p th:text="${item.description}">설명</p>
+    <div th:each="image: ${item.images}">
+        <img th:src="@{{url}/{image} (url=#{src.item.image}, image=${image.storeFileName})}"/>
+    </div>
+    <p th:utext="${item.description}">설명</p>
     <p th:text="${item.address.zonecode}">우편번호</p>
     <p th:text="${item.address.address}">주소</p>
     <p th:text="${item.addressDetail}">상세 주소</p>

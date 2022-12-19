@@ -1,6 +1,6 @@
 package bigcircle.travel.repository.memory;
 
-import bigcircle.travel.domain.CategoryType;
+import bigcircle.travel.domain.Category;
 import bigcircle.travel.repository.CategoryRepository;
 import org.springframework.stereotype.Component;
 
@@ -9,15 +9,15 @@ import java.util.Objects;
 @Component
 public class CategoryEnumRepository implements CategoryRepository {
 
-    private CategoryType categoryType;
+    private Category categoryType;
 
     @Override
-    public Long findIdByKoreanTitle(String title){
-        CategoryType[] values = CategoryType.values();
-        CategoryType finded = null;
+    public Long findIdByKorean(String korean){
+        Category[] values = Category.values();
+        Category finded = null;
 
-        for (CategoryType value : values) {
-            if( value.getKorean().equals(title)){
+        for (Category value : values) {
+            if( value.getKr().equals(korean)){
                 finded = value;
             }
         }
@@ -29,11 +29,11 @@ public class CategoryEnumRepository implements CategoryRepository {
     }
 
     @Override
-    public CategoryType findCategoryById(Long id){
-        CategoryType[] values = CategoryType.values();
-        CategoryType finded = null;
+    public Category findById(Long id){
+        Category[] values = Category.values();
+        Category finded = null;
 
-        for (CategoryType value : values) {
+        for (Category value : values) {
             if(Objects.equals(value.getId(), id)){
                 finded = value;
             }

@@ -1,27 +1,25 @@
 package bigcircle.travel.domain;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 
 
 /**
  * PK - zonecode
  */
+@EqualsAndHashCode
+@Getter
+@ToString
 public class Address {
 
-    private Integer zonecode;
-    private String address;
+    private final Integer zonecode;
+    private final String address;
 
     public Address(Integer zonecode, String address) {
         this.zonecode = zonecode;
         this.address = address;
     }
-
-    public Integer getZonecode() {
-        return zonecode;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
 }

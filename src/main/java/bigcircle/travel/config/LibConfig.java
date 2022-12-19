@@ -1,6 +1,6 @@
 package bigcircle.travel.config;
 
-import bigcircle.travel.repository.memory.CategoryEnumRepository;
+import bigcircle.travel.lib.file.FileStore;
 import bigcircle.travel.lib.PrefixViewPathGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,4 +13,6 @@ public class LibConfig {
     }
 
 
+    @Bean
+    public FileStore fileStore(){return new FileStore();}
 }

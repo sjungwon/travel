@@ -1,7 +1,9 @@
 package bigcircle.travel;
 
-import bigcircle.travel.config.ItemMemoryConfig;
+import bigcircle.travel.config.MemoryRepositoryConfig;
+import bigcircle.travel.config.JdbcRepositoryConfig;
 import bigcircle.travel.config.LibConfig;
+import bigcircle.travel.config.ServiceConfig;
 import bigcircle.travel.repository.ItemRepository;
 import bigcircle.travel.service.ItemService;
 import org.springframework.boot.SpringApplication;
@@ -10,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-@Import({ItemMemoryConfig.class, LibConfig.class})
+@Import({ServiceConfig.class, LibConfig.class, MemoryRepositoryConfig.class})
 @SpringBootApplication(scanBasePackages = "bigcircle.travel.web")
 public class TravelApplication {
 
@@ -20,5 +22,5 @@ public class TravelApplication {
 
 	@Bean
 	@Profile("local")
-	public TestDataInit testDataInit(ItemService service){return new TestDataInit(service);}
+	public TestDataInit testDataInit(ItemService service, ItemRepository itemRepository){return new TestDataInit(service,itemRepository);}
 }

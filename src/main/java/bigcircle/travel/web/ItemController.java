@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -55,7 +56,7 @@ public class ItemController {
     }
 
     @PostMapping("/save")
-    public String saveItem(@ModelAttribute @Validated ItemFormDto itemFormDto, BindingResult bindingResult){
+    public String saveItem(@ModelAttribute @Validated ItemFormDto itemFormDto, BindingResult bindingResult) throws IOException {
         log.info("itemCreateDto={}", itemFormDto);
 
         if(bindingResult.hasErrors()){
@@ -71,7 +72,7 @@ public class ItemController {
     public String getUpdateForm(@PathVariable Long id, Model model){
         ItemDto itemDto = service.getItem(id);
 
-        ItemUpdateFormDto itemUpdateFormDto = new ItemUpdateFormDto(itemDto.getId(), itemDto.getTitle(), itemDto.getAddress().getZonecode(), itemDto.getAddress().getAddress(), itemDto.getAddressDetail(), itemDto.getDescription(), itemDto.getCategory().getKorean());
+        ItemUpdateFormDto itemUpdateFormDto = new ItemUpdateFormDto(itemDto.getId(), itemDto.getTitle(), itemDto.getAddress().getZonecode(), itemDto.getAddress().getAddress(), itemDto.getAddressDetail(), itemDto.getDescription(), itemDto.getCategory().getKr());
 
         model.addAttribute("id",id);
         model.addAttribute("itemUpdateFormDto", itemUpdateFormDto);

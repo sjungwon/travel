@@ -28,14 +28,13 @@ public class AddressMemoryRepository implements AddressRepository {
     }
 
     @Override
-    public Address findByZonecode(int zonecode) {
+    public Address findByZonecode(Integer zonecode) {
         Address address = db.get(zonecode);
 
         return address;
     }
 
-    @Override
-    public void update(Address address) {
-
+    public void clear(){
+        this.db.clear();
     }
 }

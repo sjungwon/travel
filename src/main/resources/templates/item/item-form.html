@@ -4,16 +4,84 @@
     <meta charset="UTF-8" />
     <title>Title</title>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <style>
+      .hidden {
+        display: none;
+      }
+      .image {
+        position: relative;
+        display: grid;
+        box-sizing: border-box;
+        padding: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 10px 10px;
+        grid-auto-rows: minmax(100px, auto);
+        width: 100%;
+        height: 80%;
+        align-items: center;
+        justify-items: center;
+      }
+      .preview {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid gray;
+        border-radius: 0.25rem;
+        width: 100%;
+        height: 100%;
+        max-width: 200px;
+        max-height: 200px;
+        min-width: 100px;
+        min-height: 100px;
+      }
+      .preview-image {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+      }
+    </style>
   </head>
   <body>
-    <form th:object="${itemFormDto}" method="post" action="/items/save">
+    <form
+      th:object="${itemFormDto}"
+      enctype="multipart/form-data"
+      method="post"
+      action="/items/save"
+    >
       <div>
         <label for="categoryTitle">카테고리:</label>
-        <input id="categoryTitle" th:field="*{categoryTitle}" type="text"/>
+        <input id="categoryTitle" th:field="*{categoryTitle}" type="text" />
       </div>
       <div>
         <label for="title">이름:</label>
         <input id="title" th:field="*{title}" type="text" />
+      </div>
+      <div>
+        <label for="itemImage" th:text="#{label.item.image}">사진:</label>
+        <div class="image">
+          <div class="preview">
+            <img class="preview-image" src="/item/icon/camera-50.png" />
+          </div>
+          <div class="preview">
+            <img class="preview-image" src="/item/icon/camera-50.png" />
+          </div>
+          <div class="preview">
+            <img class="preview-image" src="/item/icon/camera-50.png" />
+          </div>
+          <div class="preview">
+            <img class="preview-image" src="/item/icon/camera-50.png" />
+          </div>
+          <button type="button" class="btn-add">사진 추가</button>
+        </div>
+        <input
+          id="itemImage"
+          type="file"
+          class="input-file hidden"
+          multiple
+          th:field="*{itemImages}"
+        />
       </div>
       <div>
         <label for="zonecode">우편번호:</label>
@@ -35,6 +103,7 @@
       <button th:text="#{btn.item.save}">추가</button>
     </form>
     <script>
+      //카카오 우편 API
       const zonecode = document.querySelector("#zonecode");
       const address = document.querySelector("#address");
       const postFunc = (event) => {
@@ -50,6 +119,50 @@
       };
       const btnEl = document.querySelector("#address-search");
       btnEl.addEventListener("click", postFunc);
+
+      //wysiwyg - TinyMCE
+      tinymce.init({
+        selector: '#description'
+      });
+
+      //사진 파일 관리
+      let files = null;
+      const addBtn = document.querySelector(".btn-add");
+      const fileInput = document.querySelector(".input-file");
+      addBtn.addEventListener("click", () => {
+        console.log(fileInput);
+        fileInput.click();
+      });
+
+      const DEFAULT_URL = "./icon/camera-50.png";
+      const setImageFunc = (fileList) => {
+        const imageDivEl = document.querySelector(".image");
+        console.log(imageDivEl.children);
+        const prevDivEl = Array.from(imageDivEl.children).filter((c) => {
+          return c.tagName === "DIV";
+        });
+        console.log(prevDivEl);
+        prevDivEl.forEach((c, i) => {
+          const imgEl = c.firstElementChild;
+          if (i < fileList.length) {
+            imgEl.setAttribute("src", URL.createObjectURL(fileList[i]));
+          } else {
+            imgEl.setAttribute("src", DEFAULT_URL);
+          }
+        });
+      };
+
+      fileInput.addEventListener("input", (event) => {
+        const newfiles = event.target.files;
+        if (!!newfiles && newfiles.length > 4) {
+          files = Array.from(newfiles).slice(0, 5);
+          window.alert("사진은 4개까지 등록됩니다.");
+        } else {
+          files = Array.from(newfiles);
+        }
+        setImageFunc(files);
+        console.log(URL.createObjectURL(files[0]));
+      });
     </script>
   </body>
 </html>
