@@ -1,11 +1,11 @@
 package bigcircle.travel.service;
 
 import bigcircle.travel.domain.Address;
+import bigcircle.travel.domain.Item;
 import bigcircle.travel.domain.ItemImage;
 import bigcircle.travel.domain.UploadFile;
 import bigcircle.travel.lib.file.FileStore;
 import bigcircle.travel.repository.*;
-import bigcircle.travel.repository.dto.ItemDto;
 import bigcircle.travel.repository.dto.ItemSaveDto;
 import bigcircle.travel.service.dto.ItemFormDto;
 import bigcircle.travel.service.dto.ItemUpdateFormDto;
@@ -38,9 +38,9 @@ public class ItemService {
         this.fileStore = fileStore;
     }
 
-    public ItemDto getItem(Long id){return this.itemRepository.findById(id);}
+    public Item getItem(Long id){return this.itemRepository.findById(id);}
 
-    public List<ItemDto> getItems(){
+    public List<Item> getItems(){
         return this.itemRepository.findAll();
     }
 

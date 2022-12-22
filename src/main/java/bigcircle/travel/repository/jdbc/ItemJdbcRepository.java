@@ -2,12 +2,13 @@ package bigcircle.travel.repository.jdbc;
 
 import bigcircle.travel.domain.Address;
 import bigcircle.travel.domain.Category;
-import bigcircle.travel.domain.ItemImage;
+import bigcircle.travel.domain.Item;
 import bigcircle.travel.repository.ItemRepository;
-import bigcircle.travel.repository.dto.ItemDto;
 import bigcircle.travel.repository.dto.ItemSaveDto;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -16,12 +17,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+@Slf4j
 public class ItemJdbcRepository implements ItemRepository {
 
     private final NamedParameterJdbcTemplate template;
@@ -46,59 +49,99 @@ public class ItemJdbcRepository implements ItemRepository {
     }
 
     @Override
-    public ItemDto findById(Long id) {
-        String sql = "SELECT {I.id, I.title,  I.address_detail, I.thumbnail, I.description, I.created_at, I.updated_at, A.zonecode, A.address, C.id as category_id, C.kr as category_kr, C.en as category_en, M.store_file_name} FROM ITEM I " +
-                "JOIN ADDRESS A ON I.zonecode =  A.zonecode " +
+    public Item findById(Long id) {
+        String sql = "SELECT {I.id, I.title,  I.address_detail, I.thumbnail, I.description, I.created_at, I.updated_at, A.zonecode, A.address, C.id as category_id, C.kr as category_kr, C.en as category_en, ARRAY_AGG(M.store_file_name) as store_file_name_list} FROM ITEM I " +
+                "LEFT OUTER JOIN ADDRESS A ON I.zonecode =  A.zonecode " +
                 "JOIN CATEGORY C ON I.category_id = C.id " +
                 "LEFT OUTER JOIN ITEM_IMAGE M ON I.id = M.item_id " +
-                "WHERE I.id = :id";
+                "WHERE I.id = :id AND I.deleted != 1 " +
+                "GROUP BY I.id";
 
         SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
 
-        List<ItemDao> joinedItems = template.query(sql,param,joinedItemRowMapper());
+        ItemDao itemDao = null;
+        try{
+            itemDao = template.queryForObject(sql, param, itemDaoRowMapper());
+            log.info("test = {}", itemDao);
 
-        ItemDto itemDto = joinedItemToItemDto(joinedItems);
-
-        return itemDto;
+            return itemDaoToItemConverter(itemDao);
+        }catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     @Override
-    public List<ItemDto> findAll() {
-        return null;
+    public List<Item> findAll() {
+        String sql = "SELECT {I.id, I.title,  I.address_detail, I.thumbnail, I.description, I.created_at, I.updated_at, A.zonecode, A.address, C.id as category_id, C.kr as category_kr, C.en as category_en, ARRAY_AGG(M.store_file_name) as store_file_name_list} FROM ITEM I " +
+                "JOIN ADDRESS A ON I.zonecode =  A.zonecode " +
+                "JOIN CATEGORY C ON I.category_id = C.id " +
+                "LEFT OUTER JOIN ITEM_IMAGE M ON I.id = M.item_id " +
+                "GROUP BY I.id";
+
+        List<ItemDao> query = template.query(sql, itemDaoRowMapper());
+
+        List<Item> items = new ArrayList<>(query.size());
+
+        for (ItemDao itemDao : query) {
+            items.add(itemDaoToItemConverter(itemDao));
+        }
+
+        return items;
     }
 
     @Override
     public void update(Long id, ItemSaveDto itemSaveDto) {
+        String sql = "UPDATE ITEM SET "+
+                "title = :title, "+
+                "thumbnail = :thumbnail, "+
+                "zonecode = :zonecode, "+
+                "address_detail = :address_detail, "+
+                "description = :description, "+
+                "category_id = :category_id, "+
+                "updated_at = :updated_at " +
+                "WHERE id = :id";
 
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("title", itemSaveDto.getTitle())
+                .addValue("thumbnail", itemSaveDto.getThumbnail())
+                .addValue("zonecode", itemSaveDto.getZonecode())
+                .addValue("address_detail", itemSaveDto.getAddressDetail())
+                .addValue("description", itemSaveDto.getDescription())
+                .addValue("category_id", itemSaveDto.getCategoryId())
+                .addValue("updated_at", itemSaveDto.getUpdatedAt())
+                .addValue("id", id);
+
+        template.update(sql, param);
     }
 
     @Override
     public void delete(Long id) {
+        String sql = "UPDATE ITEM SET " +
+                "deleted = 1 " +
+                "WHERE id = :id";
 
+        SqlParameterSource param = new MapSqlParameterSource().addValue("id",id);
+
+        template.update(sql, param);
     }
 
-
-    private ItemDto joinedItemToItemDto(List<ItemDao> joinedItems){
-        if(joinedItems.size() < 1){
+    private Item itemDaoToItemConverter(ItemDao itemDao){
+        if(itemDao == null){
             return null;
         }
 
-        ItemDao mainData = joinedItems.get(0);
-        Address address = new Address(mainData.getZonecode(), joinedItems.get(0).getAddress());
-        Category category = Category.valueOf(joinedItems.get(0).getCategoryEn());
+        String storeFileNameList = itemDao.getStoreFileNameList();
+        String[] split = storeFileNameList.substring(1, storeFileNameList.length() - 1).split(", ");
 
-        List<ItemImage> itemImages = new ArrayList<>(joinedItems.size());
-        for (ItemDao joinedItem : joinedItems) {
-            if(joinedItem.getStoreFileName() != null){
-                ItemImage itemImage = new ItemImage(mainData.getId(), joinedItem.getStoreFileName());
-                itemImages.add(itemImage);
-            }
-        }
+        log.info("split array={}", (Object) split);
 
-        return new ItemDto(mainData.getId(), mainData.title, mainData.thumbnail, category, address, mainData.addressDetail, mainData.description, LocalDateTime.parse(mainData.createdAt), LocalDateTime.parse(mainData.updatedAt),itemImages);
+        Address address = new Address(itemDao.getZonecode(), itemDao.getAddress());
+        Category category = Category.valueOf(itemDao.categoryEn);
+
+        return new Item(itemDao.id, itemDao.title, itemDao.thumbnail, category, address, itemDao.addressDetail, itemDao.description, itemDao.createdAt, itemDao.updatedAt, (split.length > 0 && !split[0].equals("null")) ? List.of(split) : new ArrayList<>());
     }
 
-    private RowMapper<ItemDao> joinedItemRowMapper(){
+    private RowMapper<ItemDao> itemDaoRowMapper(){
         return BeanPropertyRowMapper.newInstance(ItemDao.class);
     }
 
@@ -116,12 +159,12 @@ public class ItemJdbcRepository implements ItemRepository {
         private String description;
         private String createdAt;
         private String updatedAt;
-        private String storeFileName;
+        private String storeFileNameList;
 
         public ItemDao() {
         }
 
-        public ItemDao(Long id, String title, String thumbnail, Long categoryId, String categoryKr, String categoryEn, Integer zonecode, String address, String addressDetail, String description, String createdAt, String updatedAt, String storeFileName) {
+        public ItemDao(Long id, String title, String thumbnail, Long categoryId, String categoryKr, String categoryEn, Integer zonecode, String address, String addressDetail, String description, String createdAt, String updatedAt, String storeFileNameList) {
             this.id = id;
             this.title = title;
             this.thumbnail = thumbnail;
@@ -134,7 +177,26 @@ public class ItemJdbcRepository implements ItemRepository {
             this.description = description;
             this.createdAt = createdAt;
             this.updatedAt = updatedAt;
-            this.storeFileName = storeFileName;
+            this.storeFileNameList = storeFileNameList;
+        }
+
+        @Override
+        public String toString() {
+            return "ItemDao{" +
+                    "id=" + id +
+                    ", title='" + title + '\'' +
+                    ", thumbnail='" + thumbnail + '\'' +
+                    ", categoryId=" + categoryId +
+                    ", categoryKr='" + categoryKr + '\'' +
+                    ", categoryEn='" + categoryEn + '\'' +
+                    ", zonecode=" + zonecode +
+                    ", address='" + address + '\'' +
+                    ", addressDetail='" + addressDetail + '\'' +
+                    ", description='" + description + '\'' +
+                    ", createdAt='" + createdAt + '\'' +
+                    ", updatedAt='" + updatedAt + '\'' +
+                    ", storeFileNameList='" + storeFileNameList + '\'' +
+                    '}';
         }
     }
 }

@@ -35,6 +35,7 @@ create table item(
     thumbnail varchar(50),
     created_at varchar(50),
     updated_at varchar(50),
+    deleted integer default (0) ,
     FOREIGN KEY(zonecode) REFERENCES ADDRESS(ZONECODE),
     FOREIGN KEY(category_id) REFERENCES CATEGORY(ID),
     primary key (id)
@@ -45,8 +46,16 @@ create table item_image(
     item_id bigint NOT NULL,
     primary key(store_file_name),
     FOREIGN KEY(store_file_name) REFERENCES upload_file(store_file_name),
-    FOREIGN KEY(item_id) REFERENCES ITEM(id)
+    FOREIGN KEY(item_id) REFERENCES ITEM(id) ON DELETE CASCADE
 );
 
 INSERT INTO CATEGORY (KR, EN) VALUES ('호텔', 'HOTEL');
 INSERT INTO CATEGORY (KR, EN) VALUES ('나머지','ETC');
+--INSERT INTO ADDRESS (zonecode, address) VALUES ('1234', '내집');
+--INSERT INTO UPLOAD_FILE (store_file_name, upload_file_name) VALUES ('2af41f66-3663-4e02-a955-feef8bc.jpeg', '테스트이미지1.png');
+--INSERT INTO UPLOAD_FILE (store_file_name, upload_file_name) VALUES ('cfee755a-91c0-48e1-8a9b-caebc7d.jpg', '테스트이미지2.png');
+--INSERT INTO ITEM (title, zonecode, address_detail, description, category_id, thumbnail,created_at, updated_at) VALUES ('내집', '1234', '내집', '5성급', 2, '2af41f66-3663-4e02-a955-feef8bc.jpeg', '2022','2022');
+--INSERT INTO ITEM_IMAGE (store_file_name, item_id) VALUES ('2af41f66-3663-4e02-a955-feef8bc.jpeg', 1);
+--INSERT INTO ITEM_IMAGE (store_file_name, item_id) VALUES ('cfee755a-91c0-48e1-8a9b-caebc7d.jpg', 1);
+--
+--SELECT {I.id, I.title,  I.address_detail, I.thumbnail, I.description, I.created_at, I.updated_at, A.zonecode, A.address, C.id as category_id, C.kr as category_kr, C.en as category_en, ARRAY_AGG(M.store_file_name)} FROM ITEM I JOIN ADDRESS A ON I.zonecode =  A.zonecode JOIN CATEGORY C ON I.category_id = C.id LEFT OUTER JOIN ITEM_IMAGE M ON I.id = M.item_id

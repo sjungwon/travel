@@ -3,10 +3,8 @@ package bigcircle.travel.repository.memory;
 import bigcircle.travel.domain.*;
 import bigcircle.travel.lib.LongIdGenerator;
 import bigcircle.travel.repository.AddressRepository;
-import bigcircle.travel.repository.CategoryRepository;
 import bigcircle.travel.repository.ItemImageRepository;
 import bigcircle.travel.repository.dto.ItemSaveDto;
-import bigcircle.travel.repository.dto.ItemDto;
 import bigcircle.travel.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -48,18 +46,19 @@ public class ItemMemoryRepository implements ItemRepository {
     }
 
     @Override
-    public ItemDto findById(Long id){
+    public Item findById(Long id){
         Item item = this.db.get(id);
 
         log.info("test={}",item);
-        return join(item);
+
+        return item;
     }
 
     @Override
-    public List<ItemDto> findAll(){
+    public List<Item> findAll(){
         Set<Long> keySet = this.db.keySet();
 
-        List<ItemDto> items = new ArrayList<>(this.db.size());
+        List<Item> items = new ArrayList<>(this.db.size());
 
         for (Long s : keySet) {
             items.add(this.findById(s));
@@ -71,8 +70,6 @@ public class ItemMemoryRepository implements ItemRepository {
     @Override
     public void update(Long id, ItemSaveDto itemSaveDto){
         Item prev = this.db.get(id);
-
-        String createdAt = prev.getCreatedAt();
 
         this.db.remove(id);
 
@@ -90,8 +87,8 @@ public class ItemMemoryRepository implements ItemRepository {
         this.db.clear();
     }
 
-    public ItemDto join(Item item){
-        Long categoryId = item.getCategoryId();
+    private Item itemSaveDtoToItemConverter(Long id, ItemSaveDto itemSaveDto){
+        Long categoryId = itemSaveDto.getCategoryId();
 
         Category[] values = Category.values();
         Category category = null;
@@ -101,16 +98,16 @@ public class ItemMemoryRepository implements ItemRepository {
             }
         }
 
-        Address address = this.addressRepository.findByZonecode(item.getZonecode());
+        Address address = this.addressRepository.findByZonecode(itemSaveDto.getZonecode());
 
-        List<ItemImage> itemImages = itemImageRepository.findByItemId(item.getId());
+        List<ItemImage> itemImages = itemImageRepository.findByItemId(id);
 
-        return new ItemDto(item.getId(), item.getTitle(), item.getThumbnail(),category, address, item.getAddressDetail(), item.getDescription(), LocalDateTime.parse(item.getCreatedAt()), LocalDateTime.parse(LocalDateTime.now().toString()), itemImages);
-    }
+        List<String> itemStoreFileNames = new ArrayList<>(itemImages.size());
+        for (ItemImage itemImage : itemImages) {
+            itemStoreFileNames.add(itemImage.getStoreFileName());
+        }
 
-
-    private Item itemSaveDtoToItemConverter(Long id, ItemSaveDto itemSaveDto){
         log.info("itemSaveDto = {}", itemSaveDto);
-        return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getThumbnail() ,itemSaveDto.getZonecode(), itemSaveDto.getAddressDetail(), itemSaveDto.getDescription(), itemSaveDto.getCategoryId(), itemSaveDto.getCreatedAt(), itemSaveDto.getUpdatedAt());
+        return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getThumbnail(),category ,address, itemSaveDto.getAddressDetail(),itemSaveDto.getDescription(), itemSaveDto.getCreatedAt(), itemSaveDto.getUpdatedAt(), itemStoreFileNames);
     }
 }

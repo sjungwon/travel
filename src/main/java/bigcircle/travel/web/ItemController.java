@@ -1,8 +1,9 @@
 package bigcircle.travel.web;
 
+import bigcircle.travel.domain.Category;
+import bigcircle.travel.domain.Item;
 import bigcircle.travel.lib.PrefixViewPath;
 import bigcircle.travel.lib.PrefixViewPathGenerator;
-import bigcircle.travel.repository.dto.ItemDto;
 import bigcircle.travel.service.dto.ItemFormDto;
 import bigcircle.travel.service.ItemService;
 import bigcircle.travel.service.dto.ItemUpdateFormDto;
@@ -31,7 +32,7 @@ public class ItemController {
 
     @GetMapping("{id}")
     public String getItem(@PathVariable Long id, Model model){
-        ItemDto item = service.getItem(id);
+        Item item = service.getItem(id);
 
         model.addAttribute("item", item);
 
@@ -41,7 +42,7 @@ public class ItemController {
     @GetMapping
     public String getItems(Model model){
 
-        List<ItemDto> items = service.getItems();
+        List<Item> items = service.getItems();
 
         model.addAttribute("items", items);
 
@@ -52,6 +53,7 @@ public class ItemController {
     public String getSaveForm(Model model){
         ItemFormDto itemFormDto = new ItemFormDto();
         model.addAttribute("itemFormDto", itemFormDto);
+        model.addAttribute("categories", Category.values());
         return prefixViewPath.call("item-form");
     }
 
@@ -70,9 +72,9 @@ public class ItemController {
 
     @GetMapping("/update/{id}")
     public String getUpdateForm(@PathVariable Long id, Model model){
-        ItemDto itemDto = service.getItem(id);
+        Item item = service.getItem(id);
 
-        ItemUpdateFormDto itemUpdateFormDto = new ItemUpdateFormDto(itemDto.getId(), itemDto.getTitle(), itemDto.getAddress().getZonecode(), itemDto.getAddress().getAddress(), itemDto.getAddressDetail(), itemDto.getDescription(), itemDto.getCategory().getKr());
+        ItemUpdateFormDto itemUpdateFormDto = new ItemUpdateFormDto(item.getId(), item.getTitle(), item.getAddress().getZonecode(), item.getAddress().getAddress(), item.getAddressDetail(), item.getDescription(), item.getCategory().getKr());
 
         model.addAttribute("id",id);
         model.addAttribute("itemUpdateFormDto", itemUpdateFormDto);

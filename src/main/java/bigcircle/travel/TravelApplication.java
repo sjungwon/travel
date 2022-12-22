@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-@Import({ServiceConfig.class, LibConfig.class, MemoryRepositoryConfig.class})
+@Import({ServiceConfig.class, LibConfig.class, JdbcRepositoryConfig.class})
 @SpringBootApplication(scanBasePackages = "bigcircle.travel.web")
 public class TravelApplication {
 
