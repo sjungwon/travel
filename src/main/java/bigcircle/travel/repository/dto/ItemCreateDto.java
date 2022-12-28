@@ -1,4 +1,4 @@
-package bigcircle.travel.item.repository;
+package bigcircle.travel.repository.dto;
 
 import lombok.Getter;
 import lombok.Setter;

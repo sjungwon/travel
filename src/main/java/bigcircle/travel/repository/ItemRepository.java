@@ -1,6 +1,7 @@
-package bigcircle.travel.item.repository;
+package bigcircle.travel.repository;
 
-import bigcircle.travel.item.domain.Item;
+import bigcircle.travel.domain.Item;
+import bigcircle.travel.repository.dto.ItemCreateDto;
 
 import java.util.*;
 

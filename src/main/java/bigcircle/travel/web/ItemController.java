@@ -1,8 +1,8 @@
-package bigcircle.travel.item.web;
+package bigcircle.travel.web;
 
-import bigcircle.travel.item.domain.Item;
-import bigcircle.travel.item.repository.ItemCreateDto;
-import bigcircle.travel.item.service.ItemService;
+import bigcircle.travel.domain.Item;
+import bigcircle.travel.repository.dto.ItemCreateDto;
+import bigcircle.travel.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

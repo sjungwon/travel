@@ -1,4 +1,4 @@
-package bigcircle.travel.address.respository;
+package bigcircle.travel.repository.dto;
 
 public class AddressCreateDto {
     private Integer zonecode;

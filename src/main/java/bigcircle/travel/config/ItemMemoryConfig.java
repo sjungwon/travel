@@ -1,8 +1,8 @@
-package bigcircle.travel.item.config;
+package bigcircle.travel.config;
 
-import bigcircle.travel.item.repository.ItemMemoryRepository;
-import bigcircle.travel.item.repository.ItemRepository;
-import bigcircle.travel.item.service.ItemService;
+import bigcircle.travel.repository.memory.ItemMemoryRepository;
+import bigcircle.travel.repository.ItemRepository;
+import bigcircle.travel.service.ItemService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

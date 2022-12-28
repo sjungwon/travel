@@ -1,7 +1,8 @@
-package bigcircle.travel.address.respository;
+package bigcircle.travel.repository.memory;
 
-import bigcircle.travel.address.domain.Address;
-import bigcircle.travel.item.domain.Item;
+import bigcircle.travel.domain.Address;
+import bigcircle.travel.repository.dto.AddressCreateDto;
+import bigcircle.travel.repository.AddressRepository;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class AddressMemoryRepository implements AddressRepository{
+public class AddressMemoryRepository implements AddressRepository {
 
     private static Map<Integer, Address> db = new ConcurrentHashMap<>();
 

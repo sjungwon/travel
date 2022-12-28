@@ -1,6 +1,9 @@
 package bigcircle.travel.item.repository;
 
-import bigcircle.travel.item.domain.Item;
+import bigcircle.travel.domain.Item;
+import bigcircle.travel.repository.dto.ItemCreateDto;
+import bigcircle.travel.repository.memory.ItemMemoryRepository;
+import bigcircle.travel.repository.ItemRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

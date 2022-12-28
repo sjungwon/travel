@@ -1,4 +1,4 @@
-package bigcircle.travel.item.domain;
+package bigcircle.travel.domain;
 
 public class Item {
 

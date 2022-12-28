@@ -1,6 +1,8 @@
-package bigcircle.travel.item.repository;
+package bigcircle.travel.repository.memory;
 
-import bigcircle.travel.item.domain.Item;
+import bigcircle.travel.domain.Item;
+import bigcircle.travel.repository.dto.ItemCreateDto;
+import bigcircle.travel.repository.ItemRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

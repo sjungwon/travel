@@ -1,4 +1,4 @@
-package bigcircle.travel.address.domain;
+package bigcircle.travel.domain;
 
 import java.time.LocalDateTime;
 

@@ -1,8 +1,8 @@
-package bigcircle.travel.item.service;
+package bigcircle.travel.service;
 
-import bigcircle.travel.item.domain.Item;
-import bigcircle.travel.item.repository.ItemCreateDto;
-import bigcircle.travel.item.repository.ItemRepository;
+import bigcircle.travel.domain.Item;
+import bigcircle.travel.repository.dto.ItemCreateDto;
+import bigcircle.travel.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,8 +1,8 @@
 package bigcircle.travel;
 
 
-import bigcircle.travel.item.repository.ItemCreateDto;
-import bigcircle.travel.item.repository.ItemRepository;
+import bigcircle.travel.repository.dto.ItemCreateDto;
+import bigcircle.travel.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
