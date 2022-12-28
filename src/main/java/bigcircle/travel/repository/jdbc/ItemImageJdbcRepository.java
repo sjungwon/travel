@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -52,6 +53,15 @@ public class ItemImageJdbcRepository implements ItemImageRepository {
         }
 
         return itemImages;
+    }
+
+    @Override
+    public void deleteByStoreFileName(String storeFileName) {
+        String sql = "DELETE FROM ITEM_IMAGE WHERE store_file_name = :storeFileName";
+
+        SqlParameterSource param = new MapSqlParameterSource().addValue("storeFileName",storeFileName);
+
+        this.template.update(sql,param);
     }
 
     private ItemImage itemImageDaoToItemImage(ItemImageDao itemImageDao){

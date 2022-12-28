@@ -17,7 +17,7 @@ public class ServiceConfig {
     }
 
     @Bean
-    public ItemService itemService(ItemRepository itemRepository, AddressRepository addressRepository, CategoryRepository categoryRepository, FileRepository fileRepository, ItemImageRepository itemImageRepository, FileStore fileStore){
-        return new ItemService(itemRepository, addressRepository,categoryRepository,fileRepository, itemImageRepository, fileStore);
+    public ItemService itemService(ItemRepository itemRepository, AddressRepository addressRepository, FileRepository fileRepository, ItemImageRepository itemImageRepository, FileStore fileStore){
+        return new ItemService(itemRepository, addressRepository,fileRepository, itemImageRepository, fileStore);
     }
 }

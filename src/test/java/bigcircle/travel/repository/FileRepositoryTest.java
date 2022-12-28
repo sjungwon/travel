@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,11 +62,27 @@ class FileRepositoryTest {
 
         //when
         this.fileRepository.saveFiles(uploadFiles);
+
+        //then
         for (UploadFile uploadFile : uploadFiles) {
             UploadFile found = this.fileRepository.findByStoreFileName(uploadFile.getStoreFileName());
             Assertions.assertThat(found.getStoreFileName()).isEqualTo(uploadFile.getStoreFileName());
             Assertions.assertThat(found.getUploadFileName()).isEqualTo(uploadFile.getUploadFileName());
         }
+    }
 
+    @Test
+    @DisplayName("delete")
+    public void delete(){
+        //given
+        UploadFile uploadFile = new UploadFile("테스트이미지1.jpg", UUID.randomUUID().toString().substring(0, 30) + ".jpg");
+        this.fileRepository.saveFile(uploadFile);
+
+        //when
+        this.fileRepository.deleteFile(uploadFile.getStoreFileName());
+
+        //then
+        Assertions.assertThatThrownBy(()->
+                this.fileRepository.findByStoreFileName(uploadFile.getStoreFileName())).isInstanceOf(EmptyResultDataAccessException.class);
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class ItemJdbcRepository implements ItemRepository {
 
     @Override
     public Item findById(Long id) {
-        String sql = "SELECT {I.id, I.title,  I.address_detail, I.thumbnail, I.description, I.created_at, I.updated_at, A.zonecode, A.address, C.id as category_id, C.kr as category_kr, C.en as category_en, ARRAY_AGG(M.store_file_name) as store_file_name_list} FROM ITEM I " +
+        String sql = "SELECT {I.id, I.title,  I.address_detail, I.thumbnail, I.description, I.created_at, I.updated_at, A.zonecode, A.address, C.id as category_id, C.kr as category_kr, C.en as category_en, ARRAY_AGG(M.store_file_name ORDER BY M.id) as store_file_name_list} FROM ITEM I " +
                 "LEFT OUTER JOIN ADDRESS A ON I.zonecode =  A.zonecode " +
                 "JOIN CATEGORY C ON I.category_id = C.id " +
                 "LEFT OUTER JOIN ITEM_IMAGE M ON I.id = M.item_id " +
@@ -59,34 +60,35 @@ public class ItemJdbcRepository implements ItemRepository {
 
         SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
 
-        ItemDao itemDao = null;
-        try{
-            itemDao = template.queryForObject(sql, param, itemDaoRowMapper());
-            log.info("test = {}", itemDao);
+        //id로 접근한 경우엔 해당 데이터가 없으면 오류가 맞음 -> EmptyResultDataAccessException 전파
+        ItemDao itemDao = template.queryForObject(sql, param, itemDaoRowMapper());
+        log.info("test = {}", itemDao);
 
-            return itemDaoToItemConverter(itemDao);
-        }catch(EmptyResultDataAccessException e){
-            return null;
-        }
+        return itemDaoToItemConverter(itemDao);
     }
 
     @Override
     public List<Item> findAll() {
-        String sql = "SELECT {I.id, I.title,  I.address_detail, I.thumbnail, I.description, I.created_at, I.updated_at, A.zonecode, A.address, C.id as category_id, C.kr as category_kr, C.en as category_en, ARRAY_AGG(M.store_file_name) as store_file_name_list} FROM ITEM I " +
+        String sql = "SELECT {I.id, I.title,  I.address_detail, I.thumbnail, I.description, I.created_at, I.updated_at, A.zonecode, A.address, C.id as category_id, C.kr as category_kr, C.en as category_en, ARRAY_AGG(M.store_file_name ORDER BY M.id) as store_file_name_list} FROM ITEM I " +
                 "JOIN ADDRESS A ON I.zonecode =  A.zonecode " +
                 "JOIN CATEGORY C ON I.category_id = C.id " +
                 "LEFT OUTER JOIN ITEM_IMAGE M ON I.id = M.item_id " +
+                "WHERE I.deleted != 1 " +
                 "GROUP BY I.id";
 
-        List<ItemDao> query = template.query(sql, itemDaoRowMapper());
+        try{
+            List<ItemDao> query = template.query(sql, itemDaoRowMapper());
+            List<Item> items = new ArrayList<>(query.size());
 
-        List<Item> items = new ArrayList<>(query.size());
+            for (ItemDao itemDao : query) {
+                items.add(itemDaoToItemConverter(itemDao));
+            }
 
-        for (ItemDao itemDao : query) {
-            items.add(itemDaoToItemConverter(itemDao));
+            return items;
+        }catch(EmptyResultDataAccessException ignored){
+            return new ArrayList<>();
         }
 
-        return items;
     }
 
     @Override
@@ -138,7 +140,7 @@ public class ItemJdbcRepository implements ItemRepository {
         Address address = new Address(itemDao.getZonecode(), itemDao.getAddress());
         Category category = Category.valueOf(itemDao.categoryEn);
 
-        return new Item(itemDao.id, itemDao.title, itemDao.thumbnail, category, address, itemDao.addressDetail, itemDao.description, itemDao.createdAt, itemDao.updatedAt, (split.length > 0 && !split[0].equals("null")) ? List.of(split) : new ArrayList<>());
+        return new Item(itemDao.id, itemDao.title, itemDao.thumbnail.equals("null") ? null : itemDao.thumbnail, category, address, itemDao.addressDetail, itemDao.description, LocalDateTime.parse(itemDao.createdAt), LocalDateTime.parse(itemDao.updatedAt), (split.length > 0 && !split[0].equals("null")) ? List.of(split) : new ArrayList<>());
     }
 
     private RowMapper<ItemDao> itemDaoRowMapper(){

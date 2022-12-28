@@ -48,6 +48,14 @@ public class FileJdbcRepository implements FileRepository {
         this.template.update(sql, param);
     }
 
+    @Override
+    public void deleteFile(String storeFileName) {
+        String sql = "DELETE FROM UPLOAD_FILE WHERE store_file_name = :storeFileName";
+
+        SqlParameterSource param = new MapSqlParameterSource().addValue("storeFileName", storeFileName);
+        this.template.update(sql, param);
+    }
+
     private RowMapper<UploadFileDao> getFileDtoMapper(){
         return BeanPropertyRowMapper.newInstance(UploadFileDao.class);
     }

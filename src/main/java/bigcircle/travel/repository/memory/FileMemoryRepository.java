@@ -33,6 +33,11 @@ public class FileMemoryRepository implements FileRepository {
         this.db.put(uploadFile.getStoreFileName(), uploadFile);
     }
 
+    @Override
+    public void deleteFile(String storeFileName) {
+        this.db.remove(storeFileName);
+    }
+
     public void clear(){
         this.db.clear();
     }

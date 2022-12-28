@@ -12,4 +12,6 @@ public interface FileRepository {
     public void saveFiles(List<UploadFile> uploadFiles);
 
     public void saveFile(UploadFile uploadFile);
+
+    public void deleteFile(String storeFileName);
 }

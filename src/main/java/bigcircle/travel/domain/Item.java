@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,19 +18,19 @@ public class Item {
     private final String title;
     private final String thumbnail;
 
-    private Category category;
+    private final Category category;
 
-    private Address address;
+    private final Address address;
     private final String addressDetail;
     private final String description;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final String createdAt;
+    private final LocalDateTime createdAt;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private final String updatedAt;
+    private final LocalDateTime updatedAt;
 
     private final List<String> imageStoreFileNames;
 
-    public Item(Long id, String title, String thumbnail, Category category, Address address, String addressDetail, String description, String createdAt, String updatedAt, List<String> imageStoreFileNames) {
+    public Item(Long id, String title, String thumbnail, Category category, Address address, String addressDetail, String description, LocalDateTime createdAt, LocalDateTime updatedAt, List<String> imageStoreFileNames) {
         this.id = id;
         this.title = title;
         this.thumbnail = thumbnail;

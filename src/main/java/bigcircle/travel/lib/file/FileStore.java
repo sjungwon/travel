@@ -41,10 +41,11 @@ public class FileStore {
         }
 
         String originalFilename = multipartFile.getOriginalFilename();
+        String resizedOriginalFileName = createResizedOriginalFileName(originalFilename);
         String storeFileName = createStoreFileName(originalFilename);
         multipartFile.transferTo(new File(getFullPath(storeFileName)));
 
-        return new UploadFile(originalFilename, storeFileName);
+        return new UploadFile(resizedOriginalFileName, storeFileName);
     }
 
     public void deleteFile(UploadFile uploadFile){
@@ -52,6 +53,22 @@ public class FileStore {
         if(file.exists()){
             boolean delete = file.delete();
         }
+    }
+
+    public void deleteFile(String storeFileName){
+        File file = new File(getFullPath(storeFileName));
+        if(file.exists()){
+            boolean delete = file.delete();
+        }
+    }
+
+    private String createResizedOriginalFileName(String originalFileName){
+        if(originalFileName.length() < 50){
+            return originalFileName;
+        }
+
+        String ext = extractExt(originalFileName);
+        return originalFileName.substring(0,40) + ext;
     }
 
     private String createStoreFileName(String originalFilename){

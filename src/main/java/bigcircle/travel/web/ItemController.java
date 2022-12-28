@@ -1,20 +1,26 @@
 package bigcircle.travel.web;
 
+import bigcircle.travel.domain.Address;
 import bigcircle.travel.domain.Category;
 import bigcircle.travel.domain.Item;
-import bigcircle.travel.lib.PrefixViewPath;
-import bigcircle.travel.lib.PrefixViewPathGenerator;
-import bigcircle.travel.service.dto.ItemFormDto;
+import bigcircle.travel.domain.UploadFile;
+import bigcircle.travel.lib.file.FileStore;
+import bigcircle.travel.service.dto.ItemDto;
+import bigcircle.travel.service.dto.ItemUpdateDto;
+import bigcircle.travel.web.dto.ItemFormDto;
 import bigcircle.travel.service.ItemService;
-import bigcircle.travel.service.dto.ItemUpdateFormDto;
+import bigcircle.travel.web.dto.ItemUpdateFormDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -23,11 +29,15 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService service;
-    private final PrefixViewPath prefixViewPath;
 
-    public ItemController(ItemService service, PrefixViewPathGenerator prefixViewPathGenerator) {
+    //service 쪽에서 저장하면 서비스가 multipartfile를 사용해서 의존하게됨 -> 테스트가 어려워짐 -> 컨트롤러로 밀어냄
+    private final FileStore fileStore;
+
+    private final String prefixViewPath = "/item/";
+
+    public ItemController(ItemService service, FileStore fileStore) {
         this.service = service;
-        this.prefixViewPath = prefixViewPathGenerator.prefixView("item");
+        this.fileStore = fileStore;
     }
 
     @GetMapping("{id}")
@@ -36,7 +46,7 @@ public class ItemController {
 
         model.addAttribute("item", item);
 
-        return prefixViewPath.call("item");
+        return prefixViewPath + "item";
     }
 
     @GetMapping
@@ -46,7 +56,7 @@ public class ItemController {
 
         model.addAttribute("items", items);
 
-        return prefixViewPath.call("item-list");
+        return prefixViewPath + "item-list";
     }
 
     @GetMapping("/save")
@@ -54,18 +64,29 @@ public class ItemController {
         ItemFormDto itemFormDto = new ItemFormDto();
         model.addAttribute("itemFormDto", itemFormDto);
         model.addAttribute("categories", Category.values());
-        return prefixViewPath.call("item-form");
+        return prefixViewPath + "item-form";
     }
 
     @PostMapping("/save")
-    public String saveItem(@ModelAttribute @Validated ItemFormDto itemFormDto, BindingResult bindingResult) throws IOException {
+    public String saveItem(@ModelAttribute @Validated ItemFormDto itemFormDto, BindingResult bindingResult, Model model) throws IOException {
         log.info("itemCreateDto={}", itemFormDto);
 
         if(bindingResult.hasErrors()){
-            return prefixViewPath.call("/item-form");
+            log.info("bindingResult Error={}",bindingResult);
+            model.addAttribute("categories",Category.values());
+            return prefixViewPath + "item-form";
         }
 
-        Long id = service.save(itemFormDto);
+        List<MultipartFile> multipartFiles = itemFormDto.getItemImages();
+        List<UploadFile> uploadFiles = null;
+        if(multipartFiles.size() > 0 && StringUtils.hasText(multipartFiles.get(0).getOriginalFilename())) {
+            uploadFiles = fileStore.storeFiles(multipartFiles);
+        }
+
+        String now = LocalDateTime.now().toString();
+        ItemDto itemDto = new ItemDto(itemFormDto.getCategory(), itemFormDto.getTitle(), new Address(itemFormDto.getZonecode(), itemFormDto.getAddress()), itemFormDto.getAddressDetail(), itemFormDto.getDescription(), uploadFiles);
+
+        Long id = service.save(itemDto);
 
         return "redirect:/items/" + id.toString();
     }
@@ -74,23 +95,35 @@ public class ItemController {
     public String getUpdateForm(@PathVariable Long id, Model model){
         Item item = service.getItem(id);
 
-        ItemUpdateFormDto itemUpdateFormDto = new ItemUpdateFormDto(item.getId(), item.getTitle(), item.getAddress().getZonecode(), item.getAddress().getAddress(), item.getAddressDetail(), item.getDescription(), item.getCategory().getKr());
+        ItemUpdateFormDto itemUpdateFormDto = new ItemUpdateFormDto(item.getId(), item.getTitle(), item.getAddress().getZonecode(), item.getAddress().getAddress(), item.getAddressDetail(), item.getDescription(), item.getCategory(), null);
 
-        model.addAttribute("id",id);
         model.addAttribute("itemUpdateFormDto", itemUpdateFormDto);
+        model.addAttribute("imageStoreFileNames",item.getImageStoreFileNames());
+        model.addAttribute("categories", Category.values());
 
-        return prefixViewPath.call("item-update-form");
+        return prefixViewPath + "item-update-form";
     }
 
     @PostMapping("/update")
-    public String updateItem(@ModelAttribute @Validated ItemUpdateFormDto itemUpdateFormDto, BindingResult bindingResult){
+    public String updateItem(@ModelAttribute @Validated ItemUpdateFormDto itemUpdateFormDto, BindingResult bindingResult, Model model) throws IOException {
         log.info("itemUpdateFormDto = {}", itemUpdateFormDto);
 
         if(bindingResult.hasErrors()){
-            return prefixViewPath.call("item-update-form");
+            model.addAttribute("categories", Category.values());
+            return prefixViewPath + "item-update-form";
         }
 
-        service.update(itemUpdateFormDto);
+        List<MultipartFile> multipartFiles = itemUpdateFormDto.getItemImages();
+        List<UploadFile> uploadFiles = null;
+
+        if(multipartFiles.size() > 0 && StringUtils.hasText(multipartFiles.get(0).getOriginalFilename())){
+            //새로 업로드된 사진 저장
+            uploadFiles = fileStore.storeFiles(multipartFiles);
+        }
+
+        ItemUpdateDto itemUpdateDto = new ItemUpdateDto(itemUpdateFormDto.getId(), itemUpdateFormDto.getCategory(), itemUpdateFormDto.getTitle(), new Address(itemUpdateFormDto.getZonecode(), itemUpdateFormDto.getAddress()), itemUpdateFormDto.getAddressDetail(), itemUpdateFormDto.getDescription(), uploadFiles);
+
+        service.update(itemUpdateDto);
 
         return "redirect:/items/" + itemUpdateFormDto.getId().toString();
     }
@@ -101,4 +134,5 @@ public class ItemController {
 
         return "redirect:/items";
     }
+
 }

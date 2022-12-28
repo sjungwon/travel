@@ -97,6 +97,31 @@ class ItemImageRepositoryTest {
         Assertions.assertThat(byItemId.size()).isEqualTo(1);
         ItemImage itemImage1 = byItemId.get(0);
         Assertions.assertThat(itemImage1).isEqualTo(itemImage);
+    }
+
+    @Test
+    @DisplayName("delete")
+    public void delete(){
+        //given
+        String storeFileName = UUID.randomUUID().toString().substring(0,30);
+        UploadFile uploadFile = new UploadFile("이미지.png", storeFileName);
+        this.fileRepository.saveFile(uploadFile);
+
+        Address address = new Address(1234, "주소 어딘가");
+        this.addressRepository.save(address);
+
+        ItemSaveDto itemSaveDto = new ItemSaveDto("내집", storeFileName,1234, "내집", "설명", Category.ETC.getId(), LocalDateTime.now().toString(), LocalDateTime.now().toString());
+        Long itemId = this.itemRepository.save(itemSaveDto);
+
+        ItemImage itemImage = new ItemImage(itemId, storeFileName);
+        this.repository.saveItemImage(itemImage);
+
+        //when
+        this.repository.deleteByStoreFileName(itemImage.getStoreFileName());
+
+        //then
+        List<ItemImage> byItemId = this.repository.findByItemId(itemId);
+        Assertions.assertThat(byItemId.size()).isEqualTo(0);
 
     }
 }

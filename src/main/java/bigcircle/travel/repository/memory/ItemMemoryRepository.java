@@ -7,6 +7,7 @@ import bigcircle.travel.repository.ItemImageRepository;
 import bigcircle.travel.repository.dto.ItemSaveDto;
 import bigcircle.travel.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -48,6 +49,10 @@ public class ItemMemoryRepository implements ItemRepository {
     @Override
     public Item findById(Long id){
         Item item = this.db.get(id);
+
+        if(item == null){
+            throw new EmptyResultDataAccessException("No such data, id = " + id , 1);
+        }
 
         log.info("test={}",item);
 
@@ -108,6 +113,6 @@ public class ItemMemoryRepository implements ItemRepository {
         }
 
         log.info("itemSaveDto = {}", itemSaveDto);
-        return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getThumbnail(),category ,address, itemSaveDto.getAddressDetail(),itemSaveDto.getDescription(), itemSaveDto.getCreatedAt(), itemSaveDto.getUpdatedAt(), itemStoreFileNames);
+        return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getThumbnail(),category ,address, itemSaveDto.getAddressDetail(),itemSaveDto.getDescription(), LocalDateTime.parse(itemSaveDto.getCreatedAt()), LocalDateTime.parse(itemSaveDto.getUpdatedAt()), itemStoreFileNames);
     }
 }
