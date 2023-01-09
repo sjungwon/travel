@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{{email} (email=#{href.user.email})}" method="post" th:object="${userEmailUpdate}" class="container">
+    <input type="text" th:field="*{userId}" hidden/>
+    <div class="row">
+        <label class="form-label" for="prev-email">기존 이메일:</label>
+        <input class="form-control" id="prev-email" type="text" th:field="*{prevEmail}" readonly/>
+    </div>
+    <hr/>
+    <div class="row">
+        <label class="form-label" for="new-email">변경할 이메일:</label>
+        <input class="form-control" id="new-email" type="text" th:field="*{newEmail}"/>
+        <p class="text-danger my-2" th:errors="*{newEmail}"></p>
+    </div>
+    <hr/>
+    <div class="row">
+        <button class="btn btn-primary">변경</button>
+    </div>
+</form>
+</body>
+</html>

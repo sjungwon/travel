@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리 페이지</title>
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <a th:href="@{{users} (users=#{href.admin.users})}">유저 전체 보기</a>
+    </div>
+      <div class="row">
+          <a th:href="@{{bannedUsers} (bannedUsers=#{href.admin.users.banned})}">정지된 유저 보기</a>
+      </div>
+  </div>
+</body>
+</html>

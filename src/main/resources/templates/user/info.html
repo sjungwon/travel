@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 정보</title>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <p th:text="|저장 ID: ${user.id}|">저장 ID</p>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="col">
+      <p th:text="|권한: ${user.role.kr}|">권한</p>
+    </div>
+  </div>
+  <hr/>
+  <div class="row">
+    <p th:text="|사용자 계정: ${user.account}|">사용자 계정</p>
+  </div>
+  <hr/>
+  <div class="row">
+    <p>사용자 비밀번호: **********</p>
+    <a class="btn btn-primary btn-sm" th:href="@{{password} (password=#{href.user.password})}" role="button">비밀번호 변경</a>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="col">
+      <p th:text="|사용자 닉네임: ${user.nickname}|">사용자 닉네임</p>
+    </div>
+    <div class="col-4">
+      <a class="btn btn-primary btn-sm" th:href="@{{nickname} (nickname=#{href.user.nickname})}" role="button">닉네임 변경</a>
+    </div>
+  </div>
+  <hr/>
+  <div class="row">
+    <div class="col">
+      <p th:text="|사용자 이메일: ${user.email}|">사용자 이메일</p>
+    </div>
+    <div class="col-4">
+      <a class="btn btn-primary btn-sm" th:href="@{{email} (email=#{href.user.email})}" role="button">이메일 변경</a>
+    </div>
+  </div>
+  <hr/>
+  <div class="row">
+    <p th:text="|생성일: ${{user.createdAt}}">생성일</p>
+  </div>
+  <hr/>
+  <div class="row">
+    <p th:text="|수정일: ${{user.updatedAt}}|">수정일</p>
+  </div>
+  <hr/>
+</div>
+</body>
+</html>
