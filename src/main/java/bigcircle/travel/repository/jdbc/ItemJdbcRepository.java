@@ -135,12 +135,12 @@ public class ItemJdbcRepository implements ItemRepository {
         String storeFileNameList = itemDao.getStoreFileNameList();
         String[] split = storeFileNameList.substring(1, storeFileNameList.length() - 1).split(", ");
 
-        log.info("split array={}", (Object) split);
 
         Address address = new Address(itemDao.getZonecode(), itemDao.getAddress());
         Category category = Category.valueOf(itemDao.categoryEn);
 
-        return new Item(itemDao.id, itemDao.title, itemDao.thumbnail.equals("null") ? null : itemDao.thumbnail, category, address, itemDao.addressDetail, itemDao.description, LocalDateTime.parse(itemDao.createdAt), LocalDateTime.parse(itemDao.updatedAt), (split.length > 0 && !split[0].equals("null")) ? List.of(split) : new ArrayList<>());
+
+        return new Item(itemDao.id, itemDao.title, itemDao.thumbnail != null ? itemDao.thumbnail : null , category, address, itemDao.addressDetail, itemDao.description, LocalDateTime.parse(itemDao.createdAt), LocalDateTime.parse(itemDao.updatedAt), (split.length > 0 && !split[0].equals("null")) ? List.of(split) : new ArrayList<>());
     }
 
     private RowMapper<ItemDao> itemDaoRowMapper(){

@@ -2,11 +2,10 @@ package bigcircle.travel.config;
 
 import bigcircle.travel.lib.PasswordEncryptUtils;
 import bigcircle.travel.lib.file.FileStore;
+import bigcircle.travel.repository.*;
 import bigcircle.travel.service.FileService;
 import bigcircle.travel.service.ItemService;
 import bigcircle.travel.service.UserService;
-import bigcircle.travel.repository.UserBanInfoRepository;
-import bigcircle.travel.repository.UserRepository;
 import bigcircle.travel.service.AdminService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

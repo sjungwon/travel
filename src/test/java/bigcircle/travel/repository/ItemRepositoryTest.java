@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -136,9 +137,7 @@ class ItemRepositoryTest {
         this.repository.delete(id);
 
         //then
-        Item byId = this.repository.findById(id);
-        assertThat(byId).isNull();
-
+        assertThatThrownBy(() -> this.repository.findById(id)).isInstanceOf(EmptyResultDataAccessException.class);
     }
 
 }

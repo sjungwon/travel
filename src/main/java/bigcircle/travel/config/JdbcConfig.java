@@ -1,10 +1,8 @@
 package bigcircle.travel.config;
 
-import bigcircle.travel.repository.ItemRepository;
-import bigcircle.travel.repository.UserBanInfoRepository;
-import bigcircle.travel.repository.UserRepository;
-import bigcircle.travel.repository.jdbc.UserBanInfoJdbcRepository;
-import bigcircle.travel.repository.jdbc.UserJdbcRepository;
+import bigcircle.travel.repository.*;
+import bigcircle.travel.repository.jdbc.*;
+import bigcircle.travel.repository.memory.CategoryEnumRepository;
 import bigcircle.travel.repository.memory.ItemMemoryRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +22,27 @@ public class JdbcConfig {
     }
 
     @Bean
-    public ItemRepository itemRepository(){
-        return new ItemMemoryRepository();
+    public ItemRepository itemRepository(DataSource dataSource){return new ItemJdbcRepository(dataSource);
+    }
+
+    @Bean
+    public AddressRepository addressRepository(DataSource dataSource){
+        return new AddressJdbcRepository(dataSource);
+    }
+
+    @Bean
+    public FileRepository fileRepository(DataSource dataSource){
+        return new FileJdbcRepository(dataSource);
+    }
+
+    @Bean
+    public ItemImageRepository itemImageRepository(DataSource dataSource){
+        return new ItemImageJdbcRepository(dataSource);
+    }
+
+    //예외 - ENUM
+    @Bean
+    public CategoryRepository categoryRepository(){
+        return new CategoryEnumRepository();
     }
 }

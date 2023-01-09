@@ -1,12 +1,11 @@
 package bigcircle.travel.config;
 
-import bigcircle.travel.repository.ItemRepository;
-import bigcircle.travel.repository.UserBanInfoRepository;
-import bigcircle.travel.repository.memory.ItemMemoryRepository;
-import bigcircle.travel.repository.memory.UserBanInfoMemoryRepository;
-import bigcircle.travel.repository.memory.UserMemoryRepository;
+import bigcircle.travel.repository.*;
+import bigcircle.travel.repository.memory.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class MemoryConfig {
@@ -16,12 +15,28 @@ public class MemoryConfig {
     }
 
     @Bean
-    public ItemRepository itemRepository(){
-        return new ItemMemoryRepository();
-    }
-
-    @Bean
     public UserMemoryRepository userMemoryRepository(){
         return new UserMemoryRepository();
     }
+
+    @Bean
+    public ItemRepository itemRepository(DataSource dataSource){
+        return new ItemMemoryRepository(addressRepository(), itemImageRepository());
+    }
+
+    @Bean
+    public ItemImageRepository itemImageRepository(){
+        return new ItemImageMemoryRepository();
+    }
+
+    @Bean
+    public AddressRepository addressRepository(){return new AddressMemoryRepository();}
+
+    @Bean
+    public CategoryRepository categoryRepository(){
+        return new CategoryEnumRepository();
+    }
+
+    @Bean
+    public FileRepository fileRepository() {return new FileMemoryRepository();}
 }

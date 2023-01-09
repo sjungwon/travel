@@ -1,9 +1,14 @@
 package bigcircle.travel;
 
-import bigcircle.travel.item.config.ItemMemoryConfig;
-import bigcircle.travel.item.repository.ItemRepository;
+import bigcircle.travel.config.JdbcConfig;
+import bigcircle.travel.config.LibConfig;
+import bigcircle.travel.config.MvcConfig;
+import bigcircle.travel.config.ServiceConfig;
+import bigcircle.travel.repository.ItemRepository;
+import bigcircle.travel.service.ItemService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -20,5 +25,5 @@ public class TravelApplication {
 
 	@Bean
 	@Profile("local")
-	public TestDataInit testDataInit(ItemRepository repository){return new TestDataInit(repository);}
+	public TestDataInit testDataInit(ItemService itemService, ItemRepository repository){return new TestDataInit(itemService, repository);}
 }

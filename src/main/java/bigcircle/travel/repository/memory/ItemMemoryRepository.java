@@ -34,7 +34,7 @@ public class ItemMemoryRepository implements ItemRepository {
 
     @Override
     public Long save(ItemSaveDto itemSaveDto){
-        Long id = idGenerator.getId();
+        Long id = idGenerator.newId();
 
 
         Item item = itemSaveDtoToItemConverter(id, itemSaveDto);

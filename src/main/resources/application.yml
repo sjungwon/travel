@@ -7,6 +7,8 @@ server:
     session:
       tracking-modes:
         - cookie
+file:
+  dir: /Users/jungwon/dev/java/study/travel/filestore/
 ---
 
 spring:
