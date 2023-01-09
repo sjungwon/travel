@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <title>사용자 정지</title>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <form class="container" th:object="${userBanInfoDto}" method="post">
+      <input th:field="*{userId}" id="user-id" hidden/>
+      <div class="row">
+        <label class="form-label" for="user-account">계정</label>
+        <input class="form-control" th:field="*{userAccount}" id="user-account" readonly/>
+        <p class="text-danger" th:errors="*{userAccount}"></p>
+      </div>
+      <div class="row">
+        <label class="form-label" for="user-nickname">닉네임</label>
+        <input class="form-control" th:field="*{userNickname}" id="user-nickname" readonly/>
+        <p class="text-danger" th:errors="*{userNickname}"></p>
+      </div>
+      <div class="row mb-2">
+        <label class="form-label" for="description">정지 사유</label>
+        <textarea th:field="*{description}" id="description"></textarea>
+        <p class="text-danger" th:errors="*{description}"></p>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary">제출</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+<script>
+      tinymce.init({
+        selector: '#description'
+      });
+    </script>
+</body>
+</html>

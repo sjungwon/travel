@@ -1,0 +1,43 @@
+spring:
+  output:
+    ansi:
+      enabled: always
+server:
+  servlet:
+    session:
+      tracking-modes:
+        - cookie
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+        - local
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/travel
+    username: sa
+server:
+  port: 8080
+logging:
+  level:
+    root: info
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+        - dev
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/travel
+    username: sa
+server:
+  port: 8888
+logging:
+  level:
+    root: info
+    bigcircle.travel: DEBUG
+
+---

@@ -1,4 +1,4 @@
-package bigcircle.travel.web;
+package bigcircle.travel.web.controller;
 
 import bigcircle.travel.domain.Item;
 import bigcircle.travel.repository.dto.ItemCreateDto;
