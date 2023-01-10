@@ -45,7 +45,9 @@ class FileRepositoryTest {
         uploadFiles.add(uploadFile2);
 
         //when
-        this.fileRepository.saveFiles(uploadFiles);
+        for (UploadFile uploadFile : uploadFiles) {
+            this.fileRepository.saveFile(uploadFile);
+        }
     }
 
     @Test
@@ -61,7 +63,9 @@ class FileRepositoryTest {
         uploadFiles.add(uploadFile2);
 
         //when
-        this.fileRepository.saveFiles(uploadFiles);
+        for (UploadFile uploadFile : uploadFiles) {
+            this.fileRepository.saveFile(uploadFile);
+        }
 
         //then
         for (UploadFile uploadFile : uploadFiles) {
