@@ -71,7 +71,7 @@
               <option value="" selected>카테고리 선택...</option>
               <option
                 th:each="category : ${categories}"
-                th:value="${category.getEn()}"
+                th:value="${category.name()}"
                 th:text="${category.getKr()}"
               ></option>
             </select>

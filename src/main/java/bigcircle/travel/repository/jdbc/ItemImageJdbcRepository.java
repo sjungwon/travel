@@ -2,6 +2,7 @@ package bigcircle.travel.repository.jdbc;
 
 import bigcircle.travel.domain.ItemImage;
 import bigcircle.travel.repository.ItemImageRepository;
+import bigcircle.travel.repository.jdbc.h2.ItemImageSQLs;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -19,6 +20,7 @@ import java.util.List;
 @Repository
 public class ItemImageJdbcRepository implements ItemImageRepository {
     private final NamedParameterJdbcTemplate template;
+    private final ItemImageSQLs sql = new ItemImageSQLs();
 
     public ItemImageJdbcRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
@@ -32,20 +34,18 @@ public class ItemImageJdbcRepository implements ItemImageRepository {
     }
     @Override
     public void saveItemImage(ItemImage itemImage){
-        String sql = "INSERT INTO ITEM_IMAGE(store_file_name, item_id) VALUES (:storeFileName, :itemId)";
 
         BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(itemImage);
 
-        this.template.update(sql, param);
+        this.template.update(sql.SAVE, param);
     }
 
     @Override
     public List<ItemImage> findByItemId(Long itemId) {
-        String sql = "SELECT * FROM ITEM_IMAGE WHERE item_id = :id";
 
         MapSqlParameterSource param = new MapSqlParameterSource().addValue("id", itemId);
 
-        List<ItemImageDao> query = this.template.query(sql, param, itemImageDaoRowMapper());
+        List<ItemImageDao> query = this.template.query(sql.FIND_BY_ITEM_ID, param, itemImageDaoRowMapper());
 
         List<ItemImage> itemImages = new ArrayList<>(query.size());
         for (ItemImageDao itemImageDao : query) {
@@ -57,11 +57,10 @@ public class ItemImageJdbcRepository implements ItemImageRepository {
 
     @Override
     public void deleteByStoreFileName(String storeFileName) {
-        String sql = "DELETE FROM ITEM_IMAGE WHERE store_file_name = :storeFileName";
 
         SqlParameterSource param = new MapSqlParameterSource().addValue("storeFileName",storeFileName);
 
-        this.template.update(sql,param);
+        this.template.update(sql.DELETE,param);
     }
 
     private ItemImage itemImageDaoToItemImage(ItemImageDao itemImageDao){

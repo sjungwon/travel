@@ -1,4 +1,4 @@
-package bigcircle.travel.web;
+package bigcircle.travel.web.controller;
 
 import bigcircle.travel.domain.Address;
 import bigcircle.travel.domain.Category;

@@ -2,6 +2,7 @@ package bigcircle.travel.repository.jdbc;
 
 import bigcircle.travel.domain.Address;
 import bigcircle.travel.repository.AddressRepository;
+import bigcircle.travel.repository.jdbc.h2.AddressSQLs;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import javax.sql.DataSource;
 public class AddressJdbcRepository implements AddressRepository {
 
     private NamedParameterJdbcTemplate template;
+    private AddressSQLs sql = new AddressSQLs();
 
     public AddressJdbcRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
@@ -29,12 +31,11 @@ public class AddressJdbcRepository implements AddressRepository {
 
     @Override
     public void save(Address address) {
-        String sql = "INSERT INTO ADDRESS (zonecode, address) " + "VALUES (:zonecode, :address)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(address);
 
         try{
-            template.update(sql, param);
+            template.update(sql.SAVE, param);
         }catch(DuplicateKeyException e){
             //이미 저장된 경우 넘어감
             log.info("Address Duplicate 무시, {}", address.toString());
@@ -43,12 +44,11 @@ public class AddressJdbcRepository implements AddressRepository {
 
     @Override
     public Address findByZonecode(Integer zonecode) {
-        String sql = "SELECT * FROM ADDRESS WHERE zonecode = :zonecode";
 
         SqlParameterSource param = new MapSqlParameterSource().addValue("zonecode", zonecode);
 
         try{
-            AddressDao addressDto = template.queryForObject(sql, param, getAddressDtoMapper());
+            AddressDao addressDto = template.queryForObject(sql.FIND_BY_ZONECODE, param, getAddressDtoMapper());
             return new Address(addressDto.getZonecode(), addressDto.getAddress());
         }catch(EmptyResultDataAccessException e){
             //데이터가 없는 경우

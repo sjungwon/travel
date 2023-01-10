@@ -2,6 +2,7 @@ package bigcircle.travel.repository.jdbc;
 
 import bigcircle.travel.domain.UploadFile;
 import bigcircle.travel.repository.FileRepository;
+import bigcircle.travel.repository.jdbc.h2.FileSQLs;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -17,6 +18,7 @@ import java.util.List;
 public class FileJdbcRepository implements FileRepository {
 
     private final NamedParameterJdbcTemplate template;
+    private final FileSQLs sql = new FileSQLs();
 
     public FileJdbcRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
@@ -24,11 +26,9 @@ public class FileJdbcRepository implements FileRepository {
 
     @Override
     public UploadFile findByStoreFileName(String storeFileName) {
-        String sql = "SELECT * FROM UPLOAD_FILE WHERE store_file_name = :storeFileName";
-
         SqlParameterSource param = new MapSqlParameterSource().addValue("storeFileName", storeFileName);
 
-        UploadFileDao uploadFileDao = this.template.queryForObject(sql, param, getFileDtoMapper());
+        UploadFileDao uploadFileDao = this.template.queryForObject(sql.FIND_BY_STORE_FILE_NAME, param, getFileDtoMapper());
         return new UploadFile(uploadFileDao.getUploadFileName(), uploadFileDao.getStoreFileName());
     }
 
@@ -42,18 +42,14 @@ public class FileJdbcRepository implements FileRepository {
 
     @Override
     public void saveFile(UploadFile uploadFile){
-        String sql = "INSERT INTO UPLOAD_FILE (store_file_name, upload_file_name) " + "VALUES (:storeFileName, :uploadFileName)";
-
         BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(uploadFile);
-        this.template.update(sql, param);
+        this.template.update(sql.SAVE, param);
     }
 
     @Override
     public void deleteFile(String storeFileName) {
-        String sql = "DELETE FROM UPLOAD_FILE WHERE store_file_name = :storeFileName";
-
         SqlParameterSource param = new MapSqlParameterSource().addValue("storeFileName", storeFileName);
-        this.template.update(sql, param);
+        this.template.update(sql.DELETE, param);
     }
 
     private RowMapper<UploadFileDao> getFileDtoMapper(){
