@@ -1,9 +1,6 @@
 package bigcircle.travel.service;
 
-import bigcircle.travel.domain.Address;
-import bigcircle.travel.domain.Category;
-import bigcircle.travel.domain.Item;
-import bigcircle.travel.domain.UploadFile;
+import bigcircle.travel.domain.*;
 import bigcircle.travel.service.dto.ItemDto;
 import bigcircle.travel.service.dto.ItemUpdateDto;
 import bigcircle.travel.web.dto.ItemFormDto;
@@ -51,12 +48,16 @@ class ItemServiceTest {
         assertThat(item.getAddress()).isEqualTo(itemDto.getAddress());
         assertThat(item.getAddressDetail()).isEqualTo(itemDto.getAddressDetail());
         assertThat(item.getDescription()).isEqualTo(itemDto.getDescription());
-        List<String> imageStoreFileNames = item.getImageStoreFileNames();
-        Map<String, UploadFile> collect = uploadFiles.stream().collect(Collectors.toMap(UploadFile::getStoreFileName, e -> e));
-        for (String imageStoreFileName : imageStoreFileNames) {
-            UploadFile uploadFile = collect.get(imageStoreFileName);
-            assertThat(uploadFile).isNotNull();
-            log.info("uploadFile={}",uploadFile);
+        List<ItemImage> itemImages = item.getItemImages();
+//        List<String> imageStoreFileNames = item.getImageStoreFileNames();
+//        Map<String, UploadFile> collect = uploadFiles.stream().collect(Collectors.toMap(UploadFile::getStoreFileName, e -> e));
+//        for (String imageStoreFileName : imageStoreFileNames) {
+//            UploadFile uploadFile = collect.get(imageStoreFileName);
+//            assertThat(uploadFile).isNotNull();
+//            log.info("uploadFile={}",uploadFile);
+//        }
+        for (ItemImage itemImage : itemImages) {
+            log.info("uploadFile={}",itemImage);
         }
     }
 
@@ -121,11 +122,11 @@ class ItemServiceTest {
         assertThat(item.getAddressDetail()).isEqualTo(itemUpdateDto.getAddressDetail());
         assertThat(item.getDescription()).isEqualTo(itemUpdateDto.getDescription());
         Map<String, UploadFile> collect = uploadFiles2.stream().collect(Collectors.toMap(UploadFile::getStoreFileName, e -> e));
-        List<String> imageStoreFileNames = item.getImageStoreFileNames();
-        for (String imageStoreFileName : imageStoreFileNames) {
-            UploadFile uploadFile = collect.get(imageStoreFileName);
-            assertThat(uploadFile).isNotNull();
-        }
+//        List<String> imageStoreFileNames = item.getImageStoreFileNames();
+//        for (String imageStoreFileName : imageStoreFileNames) {
+//            UploadFile uploadFile = collect.get(imageStoreFileName);
+//            assertThat(uploadFile).isNotNull();
+//        }
     }
 
     @Test

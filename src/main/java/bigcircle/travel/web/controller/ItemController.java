@@ -1,9 +1,6 @@
 package bigcircle.travel.web.controller;
 
-import bigcircle.travel.domain.Address;
-import bigcircle.travel.domain.Category;
-import bigcircle.travel.domain.Item;
-import bigcircle.travel.domain.UploadFile;
+import bigcircle.travel.domain.*;
 import bigcircle.travel.lib.file.FileStore;
 import bigcircle.travel.service.dto.ItemDto;
 import bigcircle.travel.service.dto.ItemUpdateDto;
@@ -22,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -98,7 +96,7 @@ public class ItemController {
         ItemUpdateFormDto itemUpdateFormDto = new ItemUpdateFormDto(item.getId(), item.getTitle(), item.getAddress().getZonecode(), item.getAddress().getAddress(), item.getAddressDetail(), item.getDescription(), item.getCategory(), null);
 
         model.addAttribute("itemUpdateFormDto", itemUpdateFormDto);
-        model.addAttribute("imageStoreFileNames",item.getImageStoreFileNames());
+        model.addAttribute("imageStoreFileNames",item.getItemImages().stream().map(ItemImage::getStoreFileName).collect(Collectors.toList()));
         model.addAttribute("categories", Category.values());
 
         return prefixViewPath + "item-update-form";

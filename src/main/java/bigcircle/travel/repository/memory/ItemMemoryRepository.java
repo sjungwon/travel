@@ -47,16 +47,10 @@ public class ItemMemoryRepository implements ItemRepository {
     }
 
     @Override
-    public Item findById(Long id){
+    public Optional<Item> findById(Long id){
         Item item = this.db.get(id);
 
-        if(item == null){
-            throw new EmptyResultDataAccessException("No such data, id = " + id , 1);
-        }
-
-        log.info("test={}",item);
-
-        return item;
+        return Optional.ofNullable(item);
     }
 
     @Override
@@ -66,7 +60,10 @@ public class ItemMemoryRepository implements ItemRepository {
         List<Item> items = new ArrayList<>(this.db.size());
 
         for (Long s : keySet) {
-            items.add(this.findById(s));
+            Item item = this.db.get(s);
+            if(item != null){
+                items.add(item);
+            }
         }
 
         return items;
@@ -107,12 +104,12 @@ public class ItemMemoryRepository implements ItemRepository {
 
         List<ItemImage> itemImages = itemImageRepository.findByItemId(id);
 
-        List<String> itemStoreFileNames = new ArrayList<>(itemImages.size());
-        for (ItemImage itemImage : itemImages) {
-            itemStoreFileNames.add(itemImage.getStoreFileName());
-        }
+//        List<String> itemStoreFileNames = new ArrayList<>(itemImages.size());
+//        for (ItemImage itemImage : itemImages) {
+//            itemStoreFileNames.add(itemImage.getStoreFileName());
+//        }
 
         log.info("itemSaveDto = {}", itemSaveDto);
-        return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getThumbnail(),category ,address, itemSaveDto.getAddressDetail(),itemSaveDto.getDescription(), LocalDateTime.parse(itemSaveDto.getCreatedAt()), LocalDateTime.parse(itemSaveDto.getUpdatedAt()), itemStoreFileNames);
+        return new Item(id, itemSaveDto.getTitle(),itemSaveDto.getThumbnail(),category ,address, itemSaveDto.getAddressDetail(),itemSaveDto.getDescription(), itemImages, LocalDateTime.parse(itemSaveDto.getCreatedAt()), LocalDateTime.parse(itemSaveDto.getUpdatedAt()));
     }
 }

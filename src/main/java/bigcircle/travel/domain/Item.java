@@ -3,6 +3,7 @@ package bigcircle.travel.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @EqualsAndHashCode
 @ToString
+@RequiredArgsConstructor
 public class Item {
 
     private final Long id;
@@ -23,23 +25,11 @@ public class Item {
     private final Address address;
     private final String addressDetail;
     private final String description;
+
+    private final List<ItemImage> itemImages;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdAt;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime updatedAt;
-
-    private final List<String> imageStoreFileNames;
-
-    public Item(Long id, String title, String thumbnail, Category category, Address address, String addressDetail, String description, LocalDateTime createdAt, LocalDateTime updatedAt, List<String> imageStoreFileNames) {
-        this.id = id;
-        this.title = title;
-        this.thumbnail = thumbnail;
-        this.category = category;
-        this.address = address;
-        this.addressDetail = addressDetail;
-        this.description = description;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.imageStoreFileNames = imageStoreFileNames;
-    }
 }

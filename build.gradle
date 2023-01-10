@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 //	비밀번호 암호화를 위해 security 사용
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	implementation 'com.h2database:h2'
 
 	compileOnly 'org.projectlombok:lombok'

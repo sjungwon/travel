@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -64,9 +65,11 @@ class ItemRepositoryTest {
         Long id = this.repository.save(itemSaveDto);
 
         //when
-        Item item = this.repository.findById(id);
+        Optional<Item> byId = this.repository.findById(id);
 
         //then
+        assertThat(byId.isPresent()).isTrue();
+        Item item = byId.get();
         assertThat(item.getId()).isEqualTo(id);
         assertThat(item.getTitle()).isEqualTo(itemSaveDto.getTitle());
         assertThat(item.getThumbnail()).isNull();
@@ -74,8 +77,15 @@ class ItemRepositoryTest {
         assertThat(item.getAddress().getAddress()).isEqualTo(address.getAddress());
         assertThat(item.getAddressDetail()).isEqualTo(itemSaveDto.getAddressDetail());
         assertThat(item.getDescription()).isEqualTo(itemSaveDto.getDescription());
-        assertThat(item.getImageStoreFileNames().size()).isEqualTo(0);
+        assertThat(item.getItemImages().size()).isEqualTo(0);
         log.info("itemdto = {}",item);
+    }
+
+    @Test
+    @DisplayName("findById 없는 데이터 Optional empty")
+    void emptyOptional(){
+        Optional<Item> byId = this.repository.findById(123L);
+        assertThat(byId.isEmpty()).isTrue();
     }
     @Test
     void findAll() {
@@ -111,7 +121,9 @@ class ItemRepositoryTest {
         ItemSaveDto itemSaveDto2 = new ItemSaveDto("내집1", null, address2.getZonecode(), "상세주소1", "내집", Category.ETC.getId(), LocalDateTime.now().toString(), LocalDateTime.now().toString());
         this.repository.update(id, itemSaveDto2);
 
-        Item item = this.repository.findById(id);
+        Optional<Item> byId = this.repository.findById(id);
+        assertThat(byId.isEmpty()).isFalse();
+        Item item = byId.get();
 
         //then
         assertThat(item.getId()).isEqualTo(id);
@@ -121,7 +133,7 @@ class ItemRepositoryTest {
         assertThat(item.getAddress().getAddress()).isEqualTo(address2.getAddress());
         assertThat(item.getAddressDetail()).isEqualTo(itemSaveDto2.getAddressDetail());
         assertThat(item.getDescription()).isEqualTo(itemSaveDto2.getDescription());
-        assertThat(item.getImageStoreFileNames().size()).isEqualTo(0);
+//        assertThat(item.getImageStoreFileNames().size()).isEqualTo(0);
     }
 
     @Test

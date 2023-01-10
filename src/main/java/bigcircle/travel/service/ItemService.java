@@ -4,6 +4,7 @@ import bigcircle.travel.domain.Address;
 import bigcircle.travel.domain.Item;
 import bigcircle.travel.domain.ItemImage;
 import bigcircle.travel.domain.UploadFile;
+import bigcircle.travel.exception.NotFoundException;
 import bigcircle.travel.lib.file.FileStore;
 import bigcircle.travel.repository.*;
 import bigcircle.travel.repository.dto.ItemSaveDto;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -37,7 +39,14 @@ public class ItemService {
         this.fileStore = fileStore;
     }
 
-    public Item getItem(Long id){return this.itemRepository.findById(id);}
+    public Item getItem(Long id){
+        Optional<Item> byId = this.itemRepository.findById(id);
+        if(byId.isEmpty()){
+            throw new NotFoundException(id + " item not found");
+        }
+
+        return byId.get();
+    }
 
     public List<Item> getItems(){
         return this.itemRepository.findAll();
@@ -78,7 +87,13 @@ public class ItemService {
         Long id = itemUpdateDto.getId();
 
         //없으면 repository에서 예외 던져짐
-        Item byId = this.itemRepository.findById(id);
+        Optional<Item> byId = this.itemRepository.findById(id);
+
+        if(byId.isEmpty()){
+            throw new NotFoundException();
+        }
+
+        Item item = byId.get();
 
         //주소 변경 가능성이 있으므로 저장
         //동일 주소 저장은 무시함
@@ -91,31 +106,26 @@ public class ItemService {
 
         if(uploadFiles != null && uploadFiles.size() > 0){
             //이전 사진 제거
-            List<String> imageStoreFileNames = byId.getImageStoreFileNames();
-            for (String imageStoreFileName : imageStoreFileNames) {
-                this.fileStore.deleteFile(imageStoreFileName);
-                this.fileRepository.deleteFile(imageStoreFileName);
-                this.itemImageRepository.deleteByStoreFileName(imageStoreFileName);
+            List<ItemImage> itemImages = item.getItemImages();
+            for (ItemImage itemImage : itemImages) {
+                String storeFileName = itemImage.getStoreFileName();
+                this.fileStore.deleteFile(storeFileName);
+                this.fileRepository.deleteFile(storeFileName);
+                this.itemImageRepository.deleteByStoreFileName(storeFileName);
             }
 
             //새로 업로드된 사진 정보 저장 - 컨트롤러에서 파일은 저장했음
             for (UploadFile uploadFile : uploadFiles) {
                 fileRepository.saveFile(uploadFile);
+                //사진 연관 관계 저장
+                itemImageRepository.saveItemImage(new ItemImage(id, uploadFile.getStoreFileName()));
             }
         }
 
         //item 저장 DTO 생성 및 저장
         String currentDateTime = LocalDateTime.now().toString();
-        ItemSaveDto itemSaveDto = new ItemSaveDto(itemUpdateDto.getTitle(), (uploadFiles != null && uploadFiles.size() > 0) ? uploadFiles.get(0).getStoreFileName() : byId.getThumbnail(), address.getZonecode(), itemUpdateDto.getAddressDetail(), itemUpdateDto.getDescription(), itemUpdateDto.getCategory().getId(), currentDateTime, currentDateTime);
+        ItemSaveDto itemSaveDto = new ItemSaveDto(itemUpdateDto.getTitle(), (uploadFiles != null && uploadFiles.size() > 0) ? uploadFiles.get(0).getStoreFileName() : item.getThumbnail(), address.getZonecode(), itemUpdateDto.getAddressDetail(), itemUpdateDto.getDescription(), itemUpdateDto.getCategory().getId(), currentDateTime, currentDateTime);
         itemRepository.update(id, itemSaveDto);
-
-        //사진 연관 관계 저장
-        if(uploadFiles != null && uploadFiles.size() > 0){
-            //이미지 정보 저장
-            for (UploadFile uploadFile : uploadFiles) {
-                itemImageRepository.saveItemImage(new ItemImage(id, uploadFile.getStoreFileName()));
-            }
-        }
     }
 
     public void delete(Long id){

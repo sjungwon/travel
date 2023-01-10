@@ -44,7 +44,7 @@
         >
           <div class="carousel-indicators">
             <button
-              th:each="storeFileName, iterStat : ${item.imageStoreFileNames}"
+              th:each="itemImage, iterStat : ${item.itemImages}"
               type="button"
               data-bs-target="#carouselExampleIndicators"
               th:classappend="${iterStat.first} ? 'active'"
@@ -54,17 +54,17 @@
           <div class="carousel-inner">
             <div
               class="carousel-item"
-              th:each="storeFileName, iterStat : ${item.imageStoreFileNames}"
+              th:each="itemImage, iterStat : ${item.itemImages}"
               th:classappend="${iterStat.first} ? 'active':''"
             >
               <img
-                th:src="@{{url}/{image} (url=#{src.item.image}, image=${storeFileName})}"
+                th:src="@{{url}/{image} (url=#{src.item.image}, image=${itemImage.storeFileName})}"
                 class="d-block w-100"
                 alt="..."
               />
             </div>
             <div
-              th:if="${item.imageStoreFileNames.size()} < 1"
+              th:if="${item.itemImages.size()} < 1"
               class="carousel-item active"
             >
               <img

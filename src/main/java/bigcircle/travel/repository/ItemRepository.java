@@ -8,7 +8,7 @@ import java.util.*;
 public interface ItemRepository {
     Long save(ItemSaveDto itemSaveDto);
 
-    Item findById(Long id);
+    Optional<Item> findById(Long id);
 
     List<Item> findAll();
 
