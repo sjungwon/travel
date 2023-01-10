@@ -22,13 +22,6 @@ public class FileMemoryRepository implements FileRepository {
     }
 
     @Override
-    public void saveFiles(List<UploadFile> uploadFiles) {
-        for (UploadFile uploadFile : uploadFiles) {
-            this.db.put(uploadFile.getStoreFileName(),uploadFile);
-        }
-    }
-
-    @Override
     public void saveFile(UploadFile uploadFile){
         this.db.put(uploadFile.getStoreFileName(), uploadFile);
     }

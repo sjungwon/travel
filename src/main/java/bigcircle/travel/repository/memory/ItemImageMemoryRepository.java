@@ -14,12 +14,7 @@ public class ItemImageMemoryRepository implements ItemImageRepository {
         this.db = new ConcurrentHashMap<>();
     }
 
-    @Override
-    public void saveItemImages(List<ItemImage> itemImages) {
-        for (ItemImage itemImage : itemImages) {
-            this.saveItemImage(itemImage);
-        }
-    }
+
 
     @Override
     public void saveItemImage(ItemImage itemImage) {

@@ -25,13 +25,6 @@ public class ItemImageJdbcRepository implements ItemImageRepository {
     public ItemImageJdbcRepository(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
     }
-
-    @Override
-    public void saveItemImages(List<ItemImage> itemImages){
-        for (ItemImage itemImage : itemImages) {
-            this.saveItemImage(itemImage);
-        }
-    }
     @Override
     public void saveItemImage(ItemImage itemImage){
 

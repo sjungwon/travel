@@ -9,8 +9,6 @@ import java.util.List;
 public interface FileRepository {
     public UploadFile findByStoreFileName(String storeFileName);
 
-    public void saveFiles(List<UploadFile> uploadFiles);
-
     public void saveFile(UploadFile uploadFile);
 
     public void deleteFile(String storeFileName);

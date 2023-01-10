@@ -3,6 +3,7 @@ package bigcircle.travel.service;
 import bigcircle.travel.domain.UploadFile;
 import bigcircle.travel.lib.file.FileStore;
 import bigcircle.travel.repository.FileRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,9 +19,12 @@ public class FileService {
         this.fileRepository = fileRepository;
     }
 
+    @Transactional
     public List<UploadFile> saveFiles(List<MultipartFile> multipartFiles) throws IOException {
         List<UploadFile> uploadFiles = this.fileStore.storeFiles(multipartFiles);
-        this.fileRepository.saveFiles(uploadFiles);
+        for (UploadFile uploadFile : uploadFiles) {
+            this.fileRepository.saveFile(uploadFile);
+        }
         return uploadFiles;
     }
 

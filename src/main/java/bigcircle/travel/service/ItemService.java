@@ -52,7 +52,9 @@ public class ItemService {
         //사진 저장
         List<UploadFile> uploadFiles = itemFormPureDto.getItemImages();
         if(uploadFiles != null) {
-            fileRepository.saveFiles(uploadFiles);
+            for (UploadFile uploadFile : uploadFiles) {
+                fileRepository.saveFile(uploadFile);
+            }
         }
 
         //item 저장 DTO 생성 및 저장
@@ -63,11 +65,9 @@ public class ItemService {
         //사진 연관 관계 저장
         if(uploadFiles != null && uploadFiles.size() > 0){
             //이미지 정보 저장
-            List <ItemImage> itemImages = new ArrayList<>(uploadFiles.size());
             for (UploadFile uploadFile : uploadFiles) {
-                itemImages.add(new ItemImage(itemId, uploadFile.getStoreFileName()));
+                itemImageRepository.saveItemImage(new ItemImage(itemId, uploadFile.getStoreFileName()));
             }
-            itemImageRepository.saveItemImages(itemImages);
         }
 
         return itemId;
@@ -99,7 +99,9 @@ public class ItemService {
             }
 
             //새로 업로드된 사진 정보 저장 - 컨트롤러에서 파일은 저장했음
-            fileRepository.saveFiles(uploadFiles);
+            for (UploadFile uploadFile : uploadFiles) {
+                fileRepository.saveFile(uploadFile);
+            }
         }
 
         //item 저장 DTO 생성 및 저장
@@ -110,11 +112,9 @@ public class ItemService {
         //사진 연관 관계 저장
         if(uploadFiles != null && uploadFiles.size() > 0){
             //이미지 정보 저장
-            List <ItemImage> itemImages = new ArrayList<>(uploadFiles.size());
             for (UploadFile uploadFile : uploadFiles) {
-                itemImages.add(new ItemImage(id, uploadFile.getStoreFileName()));
+                itemImageRepository.saveItemImage(new ItemImage(id, uploadFile.getStoreFileName()));
             }
-            itemImageRepository.saveItemImages(itemImages);
         }
     }
 

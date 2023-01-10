@@ -33,14 +33,6 @@ public class FileJdbcRepository implements FileRepository {
     }
 
     @Override
-    public void saveFiles(List<UploadFile> uploadFiles) {
-        //db에 저장
-        for (UploadFile uploadFile : uploadFiles) {
-            this.saveFile(uploadFile);
-        }
-    }
-
-    @Override
     public void saveFile(UploadFile uploadFile){
         BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(uploadFile);
         this.template.update(sql.SAVE, param);
